@@ -72,7 +72,7 @@ else
     feels_like="N/A"
     precipitation="0"
     pressure="N/A"
-    windspeed_unit="mph"
+    windspeed_unit="m/s"
     humidity_unit="%"
     precipitation_unit="mm"
     pressure_unit="hPa"
