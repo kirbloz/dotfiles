@@ -5,21 +5,4 @@ most of them are a copy paste from other people's repos, with some adjustments.
 
 this file is still WIP, but im slowly adding credits 
 
----
-
-
-### i3
-
-
-### kitty
-
-
-### picom
-
-
-### polybar
-
-
-### ranger
-
 
