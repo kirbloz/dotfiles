@@ -1,0 +1,135 @@
+/* ----------- simil rofi -------- */
+/* Tutti i colori inline - niente variabili */
+
+/*window {
+    font-family: "Fira Code Medium", "JetBrains Mono", monospace;
+    font-size: 13pt;
+    color: #ebdbb2;
+    background-color: rgba(11, 30, 38, 0.647);
+}*/
+
+@import 'colors.css';
+
+* {
+    font-family: "Fira Code Medium", "JetBrains Mono", "Fira Sans", monospace;
+    font-size: 14pt;
+    /* color: #ebdbb2;*/
+    color: @fg_main;
+}
+
+window {
+    background-color: @bg_dark;
+}
+
+button {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 15%;
+
+    /*background-color: rgba(23, 77, 125, 0.712);
+    border: 2px solid rgba(255, 125, 37, 0.4);
+    transition: all 0.25s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    border-radius: 18px;*/
+
+    background-color: @bg_surface;
+    border: 2px solid @accent_glow;
+    border-radius: 12px;
+    /* Effetti */
+    transition: all 0.25s ease-in-out;
+    box-shadow: 0 4px 4px @shadow_dark;
+
+    margin: 8px;
+
+    min-width: 60px;
+    min-height: 60px;
+}
+
+button:focus {
+    /*box-shadow: 0 0 0 3px rgba(106, 77, 117, 0.8);*/
+    background-size: 20%;
+    /*box-shadow: 0 0 0 3px @accent_glow,
+        0 6px 16px @shadow_medium;*/
+    /*border-color: @accent_primary;*/
+    outline: none;
+}
+
+button:hover {
+    background-size: 20%;
+    background-color: @accent_primary;
+    /*border-color: @accent_bright;*/
+    box-shadow: 0 4px 4px @accent_glow,
+        0 0 15px @accent_glow;
+
+    transition: all 0.3s cubic-bezier(.55, 0.0, .28, 1.682), box-shadow 0.5s ease-in;
+    color: @bg_dark;
+}
+
+/* Active state */
+button:active {
+    background-size: 30%;
+}
+
+#shutdown {
+    background-image: image(url("./icons/power.png"));
+}
+
+#shutdown:hover {
+    background-image: image(url("./icons/power-hover.png"));
+}
+
+#logout {
+    background-image: image(url("./icons/logout.png"));
+}
+
+#logout:hover {
+    background-image: image(url("./icons/logout-hover.png"));
+}
+
+#reboot {
+    background-image: image(url("./icons/restart.png"));
+}
+
+#reboot:hover {
+    background-image: image(url("./icons/restart-hover.png"));
+}
+
+#lock {
+    background-image: image(url("./icons/lock.png"));
+}
+
+#lock:hover {
+    background-image: image(url("./icons/lock-hover.png"));
+}
+
+#suspend {
+    background-image: image(url("./icons/suspend.png"));
+}
+
+#suspend:hover {
+    background-image: image(url("./icons/suspend-hover.png"));
+}
+
+#hibernate {
+    background-image: image(url("./icons/hibernate.png"));
+}
+
+#hibernate:hover {
+    background-image: image(url("./icons/hibernate-hover.png"));
+}
+
+/* ========== LABEL (opzionali) ========== */
+label {
+    color: rgba(235, 219, 178, 0.9);
+    font-size: 12pt;
+    margin-top: 8px;
+}
+
+label:focus {
+    color: rgba(215, 153, 33, 1);
+}
+
+label:hover {
+    color: rgba(40, 40, 40, 1);
+    font-weight: bold;
+}

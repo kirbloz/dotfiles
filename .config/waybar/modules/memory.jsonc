@@ -1,0 +1,10 @@
+{
+        "memory": {
+        "format": "\uefc5  {used} GB ",
+        "on-click": "alacritty -e btop",
+        "interval": 5,
+        "min-length": 7,
+        "max-lenght": 7
+    }
+
+}

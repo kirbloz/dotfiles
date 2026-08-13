@@ -9,7 +9,7 @@ sudo yay -Rns $(yay -Qtdq)
 rm -rf ~/.cache/*
 
 # Remove old config files
-rm -rf ~/.local/share/*
+rm -rf ~/.local/share/Trash/*
 
 # Remove duplicates, empty files, empty directories and broken symlinks
 rmlint /home/$(whoami) 

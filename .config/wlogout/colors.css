@@ -1,0 +1,64 @@
+/* ========== GRUVBOX COLOR PALETTE ========== */
+/* Cambia questi valori per switchare tema! */
+/*
+@define-color bg_dark rgba(40, 40, 40, 0.95);
+@define-color bg_surface rgba(60, 56, 54, 0.9);
+@define-color fg_main #ebdbb2;
+@define-color accent_primary #d79921;
+@define-color accent_bright #fabd2f;
+@define-color accent_glow rgba(254, 128, 25, 0.6);
+@define-color shadow_dark rgba(0, 0, 0, 0.6);
+@define-color shadow_medium rgba(0, 0, 0, 0.7);*/
+
+/* Per switchare a Gruvbox Dark Hard, commenta sopra e decommenta sotto:
+
+@define-color bg_dark rgba(29, 32, 33, 0.95);
+@define-color bg_surface rgba(50, 48, 47, 0.9);
+@define-color fg_main #d5c4a1;
+@define-color accent_primary #fe8019;
+@define-color accent_bright #fabd2f;
+@define-color accent_glow rgba(254, 128, 25, 0.6);
+@define-color shadow_dark rgba(0, 0, 0, 0.8);
+@define-color shadow_medium rgba(0, 0, 0, 0.85);
+*/
+
+
+/* Per Gruvbox edited:*/
+
+@define-color bg_dark rgba(40, 40, 40, 0.5);
+@define-color bg_surface #1d2021;
+@define-color fg_main #d65d0e;
+@define-color accent_primary #665c54;
+@define-color accent_bright @bg_dark;
+@define-color accent_glow #d65d0e;
+@define-color shadow_dark rgba(0, 0, 0, 0.2);
+@define-color shadow_medium rgba(0, 0, 0, 0.3);
+
+
+
+
+/* Per switchare a Nord, commenta sopra e decommenta sotto:
+
+@define-color bg_dark rgba(46, 52, 64, 0.95);
+@define-color bg_surface rgba(59, 66, 82, 0.9);
+@define-color fg_main #eceff4;
+@define-color accent_primary #88c0d0;
+@define-color accent_bright #8fbcbb;
+@define-color accent_glow rgba(136, 192, 208, 0.6);
+@define-color shadow_dark rgba(0, 0, 0, 0.6);
+@define-color shadow_medium rgba(0, 0, 0, 0.7);
+
+*/
+
+/* Per Dracula:
+
+@define-color bg_dark rgba(40, 42, 54, 0.95);
+@define-color bg_surface rgba(68, 71, 90, 0.9);
+@define-color fg_main #f8f8f2;
+@define-color accent_primary #bd93f9;
+@define-color accent_bright #ff79c6;
+@define-color accent_glow rgba(189, 147, 249, 0.6);
+@define-color shadow_dark rgba(0, 0, 0, 0.6);
+@define-color shadow_medium rgba(0, 0, 0, 0.7);
+
+*/

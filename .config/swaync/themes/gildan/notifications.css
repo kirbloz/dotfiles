@@ -1,0 +1,144 @@
+@import '/home/giovanni/.config/swaync/colors/gruvbox-dark.css';
+
+/* =======================================================================
+   NOTIFICATIONS
+   ======================================================================= */
+
+
+.notification-row {
+  color: @grv-fg1;
+  outline: none;
+  margin: 0;
+  padding: 0px;
+}
+
+.notification-background {
+  background-color: @grv-bg2;
+  border: 1px solid @grv-bg3;
+  border-radius: var(--radius);
+  padding: 10px;
+  margin: 6px 0;
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+.floating-notifications .notification {
+  padding: 3px;
+  border-radius: var(--radius);
+}
+
+.floating-notifications .notification-content {
+  margin: 3px;
+}
+
+.notification-row .notification-background .notification>*:last-child>* .notification-action {
+  background-color: alpha(@grv-bright-yellow, .15);
+  color: @grv-bg0;
+  /*border: 1px solid transparent;*/
+  border-radius: var(--radius);
+  /*padding: 6px;
+  margin: 4px 0;*/
+}
+
+.control-center .notification-row {
+  background-color: transparent;
+}
+
+.floating-notifications .notification>*:last-child>* {
+  min-height: 3.4em;
+}
+
+.floating-notifications.notification>*:last-child>* .notification-action {
+  all: unset;
+  border-radius: 4px;
+  background-color: @grv-bg2;
+  font-size: 5px;
+  /*margin: 40px;*/
+  font-weight: 200;
+  min-height: 12px;
+  padding: 0px;
+  border: 1px solid transparent;
+}
+
+.notification {
+  /*padding: 6px;
+  border-radius: 4px;*/
+}
+
+.notification-content {
+  /*margin: 8px;*/
+  color: @grv-muted margin: 3px;
+  padding: 4px 3px 2px 2px;
+}
+
+.notification-row:empty {
+  min-height: 80px;
+}
+
+
+.notification.critical {
+  color: @grv-critical;
+  border-left: 3px solid @grv-critical;
+  background: linear-gradient(90deg, alpha(@grv-critical, 0.06), transparent);
+}
+
+
+.image {
+  border-radius: 6px;
+  margin-right: 10px;
+}
+
+.summary {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.notification-action {
+  background-color: @grv-bg2;
+  /*padding: 6px 10px;
+  margin: 6px;*/
+}
+
+.notification-action:hover {
+  background-color: @grv-yellow;
+  color: @grv-bg0;
+}
+
+.notification-action:active {
+  background-color: @grv-yellow;
+  color: @grv-bg0;
+}
+
+.notification-placeholder {
+  opacity: 0.4;
+  font-size: 0.9rem;
+}
+
+.close-button {
+  margin: 12px 8px;
+  padding: 2px;
+  border-radius: var(--radius);
+  background-color: @grv-bg2;
+}
+
+.floating-notifications .close-button:hover {
+  /*background-color: @grv-bright-yellow;*/
+  color: @grv-bg0;
+}
+
+.notification.critical progressbar,
+progress,
+trough {
+  border-radius: var(--radius-sharp);
+}
+
+.notification.critical progressbar {
+  background-color: alpha(white, .5);
+}
+
+.control-center .notification-row .notification-background .notification .notification-content .time,
+.floating-notifications.background .notification-background .notification .notification-content .time {
+  font-size: 0.8291rem;
+  font-weight: 500;
+  */ margin-right: 1rem;
+  padding-right: unset;
+}

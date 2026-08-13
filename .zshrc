@@ -4,6 +4,10 @@
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
+autoload -U compinit && compinit
+source "$ZSH/oh-my-zsh.sh"
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -72,6 +76,7 @@ ZSH_THEME="parrot"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
 	git
+  zsh-syntax-highlighting
 )
 #	zsh-autosuggestion
 #	zsh-syntax-highlighting

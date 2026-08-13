@@ -1,0 +1,63 @@
+
+/* =======================================================================
+   NOTIFICATIONS
+   ======================================================================= */
+
+.control-center .notification-row .notification-background {
+  /*background-color: @grv-bg2;
+  border: 1px solid @grv-bg3;
+  border-radius: var(--radius-sharp);*/
+  margin: 4px 0;
+  padding: 6px;
+}
+
+.notification.critical {
+  color: grv-critical;
+}
+
+.notification-content {
+  margin: 3px;
+  padding: 4px 3px 2px 2px;
+}
+
+
+/* Notification action buttons */
+.control-center .notification-row .notification-background .notification>*:last-child>* .notification-action {
+  background: alpha(grv-selected, .15);
+  color: grv-fg;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sharp);
+  padding: 6px;
+  margin: 4px 0;
+}
+
+/* Hover/active states */
+.control-center .notification-row .notification-background .notification>*:last-child>* .notification-action:hover {
+  background: alpha(grv-selected, .25);
+  border: 1px solid grv-selected;
+}
+
+.control-center .notification-row .notification-background .notification>*:last-child>* .notification-action:active {
+  background: @grv-selected;
+  color: @grv-bg0;
+}
+
+.control-center .notification-row:empty {
+  min-height: 80px;
+}
+
+.notification-placeholder {
+  opacity: 0.4;
+  font-size: 0.9rem;
+}
+
+
+progressbar,
+progress,
+trough {
+  border-radius: var(--radius-sharp);
+}
+
+progressbar {
+  background-color: alpha(white, .5);
+}

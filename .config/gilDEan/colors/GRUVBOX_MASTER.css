@@ -1,0 +1,230 @@
+:root {
+    /* BACKGROUNDS (dark to light) */
+    --bg-hard: #1d2021;
+    /* Darkest background */
+    --bg0: #282828;
+    /* Main background */
+    --bg1: #3c3836;
+    /* Lighter background */
+    --bg2: #504945;
+    /* Module backgrounds */
+    --bg3: #665c54;
+    /* Borders */
+    --bg4: #7c6f64;
+    /* Hover states */
+    /* FOREGROUNDS (light to dark) */
+    --fg0: #fbf1c7;
+    /* Brightest foreground */
+    --fg: #ebdbb2;
+    /* Main foreground */
+    --fg2: #d5c4a1;
+    /* Dimmer foreground */
+    --fg3: #bdae93;
+    /* Dim text */
+    --fg4: #a89984;
+    /* Inactive text */
+    /* GRAYS */
+    --gray: #928374;
+    /* Mid gray */
+    /* ACCENT COLORS (normal) */
+    --red: #cc241d;
+    --green: #98971a;
+    --yellow: #d79921;
+    --blue: #458588;
+    --purple: #b16286;
+    --aqua: #689d6a;
+    --orange: #d65d0e;
+    /* ACCENT COLORS (bright) */
+    --red-bright: #fb4934;
+    --green-bright: #b8bb26;
+    --yellow-bright: #fabd2f;
+    --blue-bright: #83a598;
+    --purple-bright: #d3869b;
+    --aqua-bright: #8ec07c;
+    --orange-bright: #fe8019;
+    /* SEMANTIC MAPPINGS */
+    --accent-primary: #fe8019;
+    /* Orange - buttons, highlights */
+    --accent-secondary: #fabd2f;
+    /* Yellow - active states */
+    --warning: #fabd2f;
+    --error: #fb4934;
+    --success: #b8bb26;
+    --info: #83a598;
+    /* Terminal / misc */
+    --cursor: #bdae93;
+    --selection-bg: #665d0e;
+    --selection-fg: #ebdbb2;
+    --url: #83a598;
+}
+
+/* Preview grid and swatches for IDE color preview */
+.palette-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+    font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color: var(--fg);
+    background: transparent;
+    padding: 8px;
+}
+
+.swatch {
+    width: 160px;
+    border-radius: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: space-between;
+    background: var(--bg0);
+}
+
+/* label and hex text */
+.swatch .name {
+    font-size: 12px;
+    color: var(--fg2);
+}
+
+.swatch .hex {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fg0);
+}
+
+/* Utility classes to preview each color quickly */
+.bg-hard {
+    background: var(--bg-hard);
+}
+
+.bg0 {
+    background: var(--bg0);
+}
+
+.bg1 {
+    background: var(--bg1);
+}
+
+.bg2 {
+    background: var(--bg2);
+}
+
+.bg3 {
+    background: var(--bg3);
+}
+
+.bg4 {
+    background: var(--bg4);
+}
+
+.fg0 {
+    color: var(--fg0);
+}
+
+.fg {
+    color: var(--fg);
+}
+
+.fg2 {
+    color: var(--fg2);
+}
+
+.fg3 {
+    color: var(--fg3);
+}
+
+.fg4 {
+    color: var(--fg4);
+}
+
+.red {
+    background: var(--red);
+}
+
+.green {
+    background: var(--green);
+}
+
+.yellow {
+    background: var(--yellow);
+}
+
+.blue {
+    background: var(--blue);
+}
+
+.purple {
+    background: var(--purple);
+}
+
+.aqua {
+    background: var(--aqua);
+}
+
+.orange {
+    background: var(--orange);
+}
+
+.red-bright {
+    background: var(--red-bright);
+}
+
+.green-bright {
+    background: var(--green-bright);
+}
+
+.yellow-bright {
+    background: var(--yellow-bright);
+}
+
+.blue-bright {
+    background: var(--blue-bright);
+}
+
+.purple-bright {
+    background: var(--purple-bright);
+}
+
+.aqua-bright {
+    background: var(--aqua-bright);
+}
+
+.orange-bright {
+    background: var(--orange-bright);
+}
+
+/* Semantic utility classes */
+.accent-primary {
+    background: var(--accent-primary);
+}
+
+.accent-secondary {
+    background: var(--accent-secondary);
+}
+
+.warning {
+    background: var(--warning);
+}
+
+.error {
+    background: var(--error);
+}
+
+.success {
+    background: var(--success);
+}
+
+.info {
+    background: var(--info);
+}
+
+/* Small helper to make text readable on swatches */
+.on-dark {
+    color: var(--fg0);
+}
+
+.on-light {
+    color: var(--bg0);

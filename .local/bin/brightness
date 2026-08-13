@@ -1,0 +1,151 @@
+#!/bin/bash
+# Brightness control for external DDC/CI monitors
+# Both monitors always sync to the same level
+
+set -euo pipefail
+
+readonly STEP=10
+readonly STATE_DIR="/run/user/$(id -u)/brightness"
+readonly LOCK_FILE="$STATE_DIR/global.lock"
+readonly STATE_FILE="$STATE_DIR/brightness.state"
+readonly APPLY_PID_FILE="$STATE_DIR/apply.pid"
+
+# I2C bus numbers for monitors (from ddcutil detect)
+readonly BUS_1=2
+readonly BUS_2=3
+
+mkdir -p "$STATE_DIR"
+
+declare -A DISPLAY_MAP=(
+  ["card1-HDMI-A-1"]="1"
+)
+# Get brightness from first monitor
+get_hw_brightness() {
+    ddcutil --bus "$BUS_1" --terse getvcp 10 2>/dev/null | awk '{print $4}' || echo "50"
+}
+
+# Get current brightness (cached or hardware)
+get_brightness() {
+    if [[ -f "$STATE_FILE" ]]; then
+        cat "$STATE_FILE"
+    else
+        get_hw_brightness
+    fi
+}
+
+# Apply to both monitors sequentially (avoids i2c bus contention)
+apply_to_hardware() {
+    local value="$1"
+    ddcutil --bus "$BUS_1" --noverify --sleep-multiplier 0.1 setvcp 10 "$value" &>/dev/null || true
+    #ddcutil --bus "$BUS_2" --noverify --sleep-multiplier 0.1 setvcp 10 "$value" &>/dev/null || true
+}
+
+# Show OSD
+show_osd() {
+    local percent="$1"
+    local monitor
+    monitor=$(hyprctl monitors -j 2>/dev/null | jq -r '.[] | select(.focused == true).name' 2>/dev/null || echo "DP-2")
+    pkill -f "swayosd-client" 2>/dev/null || true
+    swayosd-client --monitor "$monitor" --custom-icon display-brightness \
+        --custom-progress-text "Brightness: ${percent}%" \
+        --custom-progress "$(awk "BEGIN {printf \"%.2f\", $percent/100}")" 2>/dev/null &
+}
+
+# Kill any pending apply process
+kill_pending_apply() {
+    if [[ -f "$APPLY_PID_FILE" ]]; then
+        local pid
+        pid=$(cat "$APPLY_PID_FILE" 2>/dev/null) || return 0
+        kill "$pid" 2>/dev/null || true
+        rm -f "$APPLY_PID_FILE"
+    fi
+}
+
+# Change brightness
+change_brightness() {
+    local action="$1"
+    
+    exec 200>"$LOCK_FILE"
+    flock 200
+    
+    local current new
+    current=$(get_brightness)
+    
+    case "$action" in
+        up)   new=$((current + STEP)); [[ $new -gt 100 ]] && new=100 ;;
+        down) new=$((current - STEP)); [[ $new -lt 0 ]] && new=0 ;;
+    esac
+    
+    echo "$new" > "$STATE_FILE"
+    show_osd "$new"
+    pkill -RTMIN+9 waybar 2>/dev/null || true
+    
+    # Kill any pending apply, start new one
+    kill_pending_apply
+    
+    (
+        sleep 0.15
+        # Read final value
+        local final
+        final=$(cat "$STATE_FILE" 2>/dev/null) || final=$new
+        apply_to_hardware "$final"
+        rm -f "$APPLY_PID_FILE"
+    ) &
+    echo $! > "$APPLY_PID_FILE"
+    
+    flock -u 200
+    echo "$new"
+}
+
+# Set specific value
+set_brightness() {
+    local value="$1"
+    [[ $value -lt 0 ]] && value=0
+    [[ $value -gt 100 ]] && value=100
+    
+    exec 200>"$LOCK_FILE"
+    flock 200
+    
+    echo "$value" > "$STATE_FILE"
+    show_osd "$value"
+    pkill -RTMIN+9 waybar 2>/dev/null || true
+    apply_to_hardware "$value"
+    
+    flock -u 200
+    echo "Set brightness to $value%"
+}
+
+# Status
+show_status() {
+    echo "State: $(cat "$STATE_FILE" 2>/dev/null || echo 'none')%"
+    echo "AOC: $(ddcutil --bus $BUS_1 --terse getvcp 10 2>/dev/null | awk '{print $4}')%"
+    #echo "DP-3: $(ddcutil --bus $BUS_2 --terse getvcp 10 2>/dev/null | awk '{print $4}')%"
+}
+
+# Init
+init_brightness() {
+    local val
+    val=$(get_hw_brightness)
+    echo "$val" > "$STATE_FILE"
+    echo "Initialized to $val%"
+}
+
+# Sync monitors
+sync_monitors() {
+    local val
+    val=$(cat "$STATE_FILE" 2>/dev/null) || val=$(get_hw_brightness)
+    echo "$val" > "$STATE_FILE"
+    apply_to_hardware "$val"
+    echo "Synced to $val%"
+}
+
+case "${1:-}" in
+    up|up-all)     change_brightness up ;;
+    down|down-all) change_brightness down ;;
+    get)           get_brightness ;;
+    set|set-all)   [[ -z "${2:-}" ]] && { echo "Usage: $0 set VALUE" >&2; exit 1; }; set_brightness "$2" ;;
+    status)        show_status ;;
+    init)          init_brightness ;;
+    sync)          sync_monitors ;;
+    *)             echo "Usage: $0 {up|down|get|set VALUE|status|init|sync}"; exit 1 ;;
+esac

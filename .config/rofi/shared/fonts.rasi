@@ -1,0 +1,15 @@
+/**
+ *
+ * Author : Aditya Shakya (adi1090x)
+ * Github : @adi1090x
+ * 
+ * Fonts
+ *
+ **/
+
+* {
+    /*font: "Iosevka Nerd Font 10";*/
+    /*override di config-adi1090x*/
+    font: "FiraCode Nerd Font 11";
+
+}
