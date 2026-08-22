@@ -48,3 +48,11 @@ hl.window_rule({
   size = { 350, 700 },
   center = true
 })
+
+
+hl.window_rule({
+  match = { title = ".*Picture-In-Picture.*" },
+  float = true,
+  size = { 700, 350 },
+  center = true
+})
