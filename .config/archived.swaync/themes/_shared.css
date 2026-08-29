@@ -1,0 +1,68 @@
+/* =======================================================================
+   SHARED — reset, accent color, CRT keyframes
+    ======================================================================= */
+
+/* Accento "fosforo giallo", stesso valore usato nel tema rofi gruvbox.
+   Sovrascrive @grv-selected così l'evidenziazione (hover, toggle attivi,
+   focus) diventa coerente in tutta la UI */
+@define-color grv-accent @grv-fg;
+@define-color grv-selected @grv-bright-yellow;
+@define-color grv-hover alpha(@grv-selected, 0.85);
+
+
+/* colors from rofi config */
+@define-color grv-bg0 #282828;
+/* grv-bg1: sfondo finestra principale — stesso "background" di rofi */
+@define-color grv-bg1 #282828;
+/* grv-bg2: superfici/card — stesso "background-alt" di rofi (inputbar, textbox) */
+@define-color grv-bg2 #353535;
+/* grv-bg3/4: bordi e divisori, un gradino sopra background-alt (rofi non li usa,
+   qui servono per dare profondità ai bordi interni) */
+@define-color grv-bg3 #454545;
+@define-color grv-bg4 #4f4f4f;
+ 
+@define-color grv-fg #EBDBB2;
+@define-color grv-fg1 #EBDBB2;
+/* Testo secondario attenuato, per .body delle notifiche */
+@define-color grv-muted #a89984;
+ 
+
+
+/* Reset globale */
+* {
+  font-family: "Fira Sans Mono", "Symbols Nerd Font", sans-serif;
+  font-size: 12px;
+  color: grv-fg1;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  text-shadow: none;
+  transition: var(--grv-transition);
+  --radius: 6px;
+  --radius-sharp: 2px;
+}
+
+.blank-window {
+  background: transparent;
+}
+
+
+@keyframes crt-flicker {
+  0%,
+  96%,
+  100% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 0.94;
+  }
+  98% {
+    opacity: 1;
+  }
+}
+
+/* Testo con glow fosforo giallo, riutilizzabile sui titoli/elementi enfatizzati */
+.crt-glow-text {
+  color: grv-accent;
+  text-shadow: 0 0 6px alpha(grv-accent, 0.65);
+}
