@@ -24,11 +24,12 @@
 
 mainMod     = "SUPER"
 terminal    = "kitty"
-fileManager = "pcmanfm"
+fileManager = "nemo"
 menu        = "rofi -show drun -theme ~/.config/rofi/theme.rasi"
+bar         = "qs"
 
-notif_manager = "swaync"
-polkit_agent = "/usr/lib/hyprpolkitagent/hyprpolkitagent"
+notif_manager = "dunst"
+polkit_agent = "/usr/lib/polkit-kde-authentication-agent-1"
 
 applet_removable_media = "udiskie --no-automount --smart-tray"
 applet_network = "nm-applet --indicator"
