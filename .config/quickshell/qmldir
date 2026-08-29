@@ -1,0 +1,6 @@
+module QuickshellConfig
+singleton Theme 1.0 Theme.qml
+singleton MprisService 1.0 services/MprisService.qml
+singleton ScreenRecorder 1.0 services/ScreenRecorder.qml
+singleton Flags 1.0 Flags.qml
+

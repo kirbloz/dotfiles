@@ -1,8 +1,0 @@
-{
-    "custom/weather": {
-    "exec": "/home/giovanni/.config/waybar/scripts/weather.sh",
-    "return-type": "json",
-    "interval": 900,
-    "tooltip": true
-}
-}

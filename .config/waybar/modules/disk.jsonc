@@ -1,8 +1,0 @@
-{
-       "disk": {
-        "interval": 30,
-        "format": "\uf0a0  {free} ",
-        "path": "/",
-        "on-click": "alacritty -e btop"
-    } 
-}
