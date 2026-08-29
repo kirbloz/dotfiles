@@ -1,0 +1,59 @@
+[global]
+    monitor = 0
+    follow = mouse
+    width = 400
+    height = 110
+    offset = 15x45
+    origin = top-right
+    transparency = 10
+    corner_radius = 6
+
+    # Font e testo
+    # NB: swaync usa "Fira Sans Mono" (da _shared.css). Se tieni JetBrainsMono
+    # Nerd Font è per via delle glyph nei tuoi widget (icone 󰕾 󰖩 ecc) — dunst
+    # in genere non ne ha bisogno nel testo delle notifiche, quindi puoi
+    # tornare a Fira Sans Mono per fedeltà totale, oppure tenere Nerd Font se
+    # ti serve per notifiche che includono glyph. Lascio Nerd Font di default
+    # visto che partivi da lì.
+    font = JetBrainsMono Nerd Font 10
+    line_height = 2
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    show_age_threshold = 60
+    word_wrap = yes
+
+    # Bordo retro
+    frame_width = 1
+    frame_color = "#fabd2f"
+    separator_color = frame
+
+    # Icone
+    icon_position = left
+    max_icon_size = 48
+
+    # Scorciatoie da tastiera
+    close = ctrl+space
+    close_all = ctrl+shift+space
+    history = ctrl+grave
+
+[urgency_low]
+    background = "#353535"
+    foreground = "#ebdbb2"
+    border_color = "#454545"
+    timeout = 2
+
+[urgency_normal]
+    background = "#353535"
+    foreground = "#ebdbb2"
+    border_color = "#454545"
+    timeout = 4
+
+[urgency_critical]
+    background = "#353535"
+    foreground = "#ebdbb2"
+    border_color = "#fb4934"
+    # swaync (config.json: "timeout-critical": 6) non teneva le critical
+    # sticky — se preferisci che restino finché non le chiudi tu manualmente,
+    # rimetti timeout = 0.
+    timeout = 6
+
