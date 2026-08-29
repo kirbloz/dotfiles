@@ -43,7 +43,7 @@ hl.window_rule({
 })
 
 hl.window_rule({
-  match = { title = ".*Friends List.*" },
+  match = { title = ".*Friends List.*|.*Extension.*Bitwarden.*" },
   float = true,
   size = { 350, 700 },
   center = true
