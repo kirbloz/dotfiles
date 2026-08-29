@@ -12,7 +12,7 @@ hl.bind(mainMod .. " + P",        hl.dsp.exec_cmd("hyprpicker"))
 hl.bind(mainMod .. " + J",        hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + ESCAPE",   hl.dsp.exec_cmd("wlogout"))
 hl.bind(mainMod .. " + W",        hl.dsp.exec_cmd("firefox"))
-hl.bind(mainMod .. " + N",        hl.dsp.exec_cmd("swaync-client -t"))
+hl.bind(mainMod .. " + N",        hl.dsp.exec_cmd("echo toggle > /tmp/qs-control-center"))
 hl.bind(mainMod .. " + O",        hl.dsp.exec_cmd("obsidian"))
 
 -- Script & Reloads
@@ -46,6 +46,8 @@ hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "l" }))
 hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "r" }))
 hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "u" }))
 hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "d" }))
+
+hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 
 --------------------------
 -- WORKSPACES [1-10]
