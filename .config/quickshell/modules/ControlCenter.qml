@@ -1,10 +1,10 @@
-import ".."
 import "../components"
 import "../components/commons"
 import "../components/effects"
 import "../components/controlcenter"
 import "../notifications"
 import "../services"
+import ".."
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -14,7 +14,6 @@ PopupWindow {
     id: root
 
     readonly property int expandedWidth: 400
-    
     readonly property int expandedHeight: mainLayout.implicitHeight + 28
     color: "transparent"
 
@@ -74,7 +73,6 @@ PopupWindow {
                
             }
 
-            // Separatore
             Rectangle {
                 Layout.fillWidth: true
                 height: 1

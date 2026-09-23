@@ -13,7 +13,6 @@ import Quickshell.Wayland
 
 PanelWindow {
     id: dashRoot
-
     property bool isOpen: false
     property bool isWindowVisible: false
     readonly property int expandedWidth: 400
@@ -58,8 +57,6 @@ color: "transparent"
         id: stats
     }
 
-
-
     ExpandingGlowPanel {
         id: panel
         width: expandedWidth
@@ -73,7 +70,6 @@ color: "transparent"
             anchors.fill:parent
             anchors.margins: 14
             spacing: 10
-
            Header { title: "System Dashboard"; onCloseRequested: dashRoot.isOpen = false }
 
             StatBar {

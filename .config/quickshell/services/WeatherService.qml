@@ -22,7 +22,7 @@ Singleton {
 
     Process {
         id: weatherProcess
-        command: ["/home/giovanni/.config/waybar/scripts/weather.sh"]
+        command: ["/home/giovanni/.local/bin/get-weather"]
 
         stdout: StdioCollector {
             onStreamFinished: {

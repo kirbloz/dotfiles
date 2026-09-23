@@ -15,7 +15,7 @@ Rectangle {
     property bool occupied: !!(hyprWs && hyprWs.toplevels.values.length > 0)
     property bool hovered: mouseArea.containsMouse
 
-    // ordine di priorità: hover > focused > active > occupato > vuoto
+    // hover > focused > active > occupato > vuoto
     readonly property string variant: hovered ? "hover"
                                      : focused ? "focused"
                                      : active  ? "active"
@@ -35,8 +35,8 @@ Rectangle {
     radius: Theme.workspaceRadius
     color: colors[variant].bg
 
-    Behavior on width { NumberAnimation { duration: 300; easing.type: Easing.InOutQuad } }
-    Behavior on color { ColorAnimation { duration: 300 } }
+    Behavior on width { NumberAnimation { duration: 200; easing.type: Easing.InOutQuad } }
+    Behavior on color { ColorAnimation { duration: 200 } }
 
     Text {
         anchors.centerIn: parent
@@ -44,13 +44,15 @@ Rectangle {
         font.pixelSize: 15
         font.bold: true
         color: root.colors[root.variant].fg
-        Behavior on color { ColorAnimation { duration: 300 } }
+        Behavior on color { ColorAnimation { duration: 200 } }
     }
 
     MouseArea {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-        onClicked: Hyprland.dispatch("workspace " + root.wsId)
+        //dispatch hl.dsp.focus({workspace = 1})
+        //onClicked: Hyprland.dispatch("workspace " + root.wsId)
+        onClicked: Hyprland.dispatch("hl.dsp.focus({workspace = " + root.wsId + "})")
     }
 }

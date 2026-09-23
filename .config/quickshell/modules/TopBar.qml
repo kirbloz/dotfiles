@@ -13,6 +13,7 @@ PanelWindow {
 
     signal openNotifCenterRequested()
     signal openControlCenterRequested()
+    signal openSelfTrackRequested()
 
     screen: modelData
     implicitHeight: 40 
@@ -36,14 +37,17 @@ PanelWindow {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 10
 
-            CustomExit {
-            }
+
+            //CustomExit {}
             ClockPill {
             }
             //  meteo, finestre hyprland e mpris
             WeatherPill {
             }
 
+        SelfTrackPill{
+            onClicked: rootBar.openSelfTrackRequested()
+        }
         }
 
         // CENTER MODULE

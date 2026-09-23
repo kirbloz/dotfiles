@@ -29,9 +29,9 @@ import ".."
  * ever started reports its stderr and resets. The on-pill record OSD shows the
  * started/stopped state, so the start is not also pushed as a notification.
  *
- * The output directory is the Flags-persisted `recordDir`, falling back to
+ * The output directory is the Settings-persisted `recordDir`, falling back to
  * `$HOME/Videos/Recordings`; `pickDir()` runs a native folder picker (kdialog
- * or zenity) and writes the chosen path back to Flags so the displayed path,
+ * or zenity) and writes the chosen path back to Settings so the displayed path,
  * Open action and recent list all follow it. A `recording` poll reconciles an
  * externally started or stopped recorder so the state is never stale.
  *
@@ -50,15 +50,15 @@ Singleton {
     readonly property string thumbDir: (Quickshell.env("XDG_CACHE_HOME") || (home + "/.cache")) + "/ricelin/rec-thumbs/"
     readonly property string thumbScript: home + "/.config/hypr/scripts/rec-thumbs.sh"
     readonly property string outDir: {
-        var d = Flags.recordDir;
+        var d = Settings.recordDir;
         return (d && d.length > 0) ? d : defaultDir;
     }
-    property int fps: Flags.recordFps
-    property string quality: Flags.recordQuality
+    property int fps: Settings.recordFps
+    property string quality: Settings.recordQuality
 
-    property bool captureCursor: Flags.recordCursor
-    property bool micOn: Flags.recordMic
-    property bool desktopOn: Flags.recordDesktop
+    property bool captureCursor: Settings.recordCursor
+    property bool micOn: Settings.recordMic
+    property bool desktopOn: Settings.recordDesktop
 
     property bool recording: false
     property bool recorderOpen: false
@@ -66,8 +66,8 @@ Singleton {
     property string currentFile: ""
     property var recent: []
     readonly property int recentCount: recent.length
-    property int recordCountdown: Flags.recordCountdown
-    property real recordClearedBefore: Flags.recordClearedBefore
+    property int recordCountdown: Settings.recordCountdown
+    property real recordClearedBefore: Settings.recordClearedBefore
     /**
      * Pre-roll countdown, owned here rather than in the surface so the quick-record
      * keybind flow gets it for free with no surface open. `beginCountdown(token)`
@@ -138,7 +138,7 @@ Singleton {
      */
     function beginCountdown(token) {
         pendingTarget = token;
-        var n = Flags.recordCountdown;
+        var n = Settings.recordCountdown;
         if (n > 0) {
             countdown = n;
             cdTimer.restart();
@@ -258,7 +258,7 @@ Singleton {
     function clearRecent() {
         var newest = 0;
         for (var i = 0; i < recent.length; i++) newest = Math.max(newest, recent[i].mtime)
-        recordClearedBefore = newest; // Flags.recordClearedBefore = newest;
+        recordClearedBefore = newest; // Settings.recordClearedBefore = newest;
         recent = [];
     }
 
@@ -274,7 +274,7 @@ Singleton {
 
     /**
      * Run a native folder picker (kdialog, else zenity) seeded at the current
-     * directory and write the chosen path to Flags so the surface, Open action
+     * directory and write the chosen path to Settings so the surface, Open action
      * and recent list all follow it. A cancelled pick prints nothing and leaves
      * the directory unchanged.
      */
@@ -297,11 +297,11 @@ Singleton {
     }
 
     onOutDirChanged: refreshRecent()
-    onFpsChanged: Flags.recordFps = fps
-    onQualityChanged: Flags.recordQuality = quality
-    onCaptureCursorChanged: Flags.recordCursor = captureCursor
-    onMicOnChanged: Flags.recordMic = micOn
-    onDesktopOnChanged: Flags.recordDesktop = desktopOn
+    onFpsChanged: Settings.recordFps = fps
+    onQualityChanged: Settings.recordQuality = quality
+    onCaptureCursorChanged: Settings.recordCursor = captureCursor
+    onMicOnChanged: Settings.recordMic = micOn
+    onDesktopOnChanged: Settings.recordDesktop = desktopOn
     onRecordingChanged: {
         if (recording) {
             cancel();
@@ -350,7 +350,7 @@ Singleton {
             onStreamFinished: {
                 var dir = this.text.trim();
                 if (dir.length > 0)
-                    Flags.recordDir = dir;
+                    Settings.recordDir = dir;
             
 
             }
@@ -465,7 +465,7 @@ Singleton {
                     if (cols.length < 3) continue;
 
                     var mtime = parseFloat(cols[0]);
-                    if (mtime <= Flags.recordClearedBefore) continue;
+                    if (mtime <= Settings.recordClearedBefore) continue;
 
                     var path = cols[2];
                     var name = path.substring(path.lastIndexOf("/") + 1);

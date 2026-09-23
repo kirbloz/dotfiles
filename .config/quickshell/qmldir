@@ -1,6 +1,10 @@
 module QuickshellConfig
 singleton Theme 1.0 Theme.qml
 singleton MprisService 1.0 services/MprisService.qml
+singleton AudioService 1.0 services/AudioService.qml
 singleton ScreenRecorder 1.0 services/ScreenRecorder.qml
-singleton Flags 1.0 Flags.qml
+singleton TimeService 1.0 services/TimeService.qml
+singleton BatteryService 1.0 services/BatteryService.qml
+
+singleton Settings 1.0 Settings.qml
 

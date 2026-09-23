@@ -1,23 +1,52 @@
+import "../.."
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
-import "../.."
 
 Rectangle {
     id: root
+
     property int notifCount: 0
     property bool isPaused: false
-    color: Theme.grvYellow 
-    radius: height/2
+
+    signal openNotifCenterRequested()
+
+    color: Theme.grvYellow
+    radius: height / 2
     implicitHeight: 25
     implicitWidth: layout.implicitWidth + 20 // Padding laterale dinamico
-    
-    signal openNotifCenterRequested()
-    
+
+    Timer {
+        id: hoverOpenTimer
+
+        interval: 120
+        onTriggered: notifHoverOpen.running = true
+    }
+
+    Timer {
+        id: hoverCloseTimer
+
+        interval: 120
+        onTriggered: notifHoverClose.running = true
+    }
+
+    Process {
+        id: notifHoverOpen
+
+        command: ["qs", "ipc", "call", "notifications", "open"]
+    }
+
+    Process {
+        id: notifHoverClose
+
+        command: ["qs", "ipc", "call", "notifications", "requestClose"]
+    }
+
     // Lettura dei dati "interval": 2)
     Timer {
         id: refreshTimer
+
         interval: 2000
         running: true
         repeat: true
@@ -28,9 +57,11 @@ Rectangle {
     // Interroga dunstctl. Otteniamo le due informazioni separate da uno spazio per pulizia.
     Process {
         id: updateState
+
         command: ["sh", "-c", "echo \"$(dunstctl count history 2>/dev/null) $(dunstctl is-paused 2>/dev/null)\""]
+
         stdout: SplitParser {
-            onRead: data => {
+            onRead: (data) => {
                 let parts = data.trim().split(" ");
                 if (parts.length >= 2) {
                     let count = parseInt(parts[0]);
@@ -39,22 +70,26 @@ Rectangle {
                 }
             }
         }
+
     }
 
     // 4. Processi in risposta ai Click
-    Process { 
+    Process {
         id: toggleNotifications
-        command: ["qs", "ipc", "call", "notifications", "toggle"] 
+
+        command: ["qs", "ipc", "call", "notifications", "toggle"]
     }
-    
-    Process { 
-        id: toggleDnd 
+
+    Process {
+        id: toggleDnd
+
         command: ["dunstctl", "set-paused", "toggle"]
         onExited: updateState.running = true // Aggiorna l'icona immediatamente
     }
-    
-    Process { 
-        id: clearHistory 
+
+    Process {
+        id: clearHistory
+
         command: ["dunstctl", "history-clear"]
         onExited: updateState.running = true // Aggiorna il counter immediatamente
     }
@@ -62,17 +97,19 @@ Rectangle {
     // 5. Interfaccia Visiva
     RowLayout {
         id: layout
+
         anchors.centerIn: parent
         spacing: 6
 
         // Gestione Logica Icone (fedele a "format-icons")
         Text {
             text: {
-                if (root.isPaused) {
-                    return root.notifCount > 0 ? "󰂛" : "󰪑"; // dnd-notification : dnd-none
-                } else {
+                // dnd-notification : dnd-none
+
+                if (root.isPaused)
+                    return root.notifCount > 0 ? "󰂛" : "󰪑";
+                else
                     return root.notifCount > 0 ? "󱅫" : "󰂜"; // notification : none
-                }
             }
             font.family: "NotoSansMono Nerd Font"
             font.pixelSize: 18
@@ -88,6 +125,7 @@ Rectangle {
             font.bold: true
             color: "#171717"
         }
+
     }
 
     // 6. Gestione Mouse
@@ -95,15 +133,23 @@ Rectangle {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
         cursorShape: Qt.PointingHandCursor
-        
+        hoverEnabled: true
+        onEntered: {
+            hoverCloseTimer.stop();
+            hoverOpenTimer.restart();
+        }
+        onExited: {
+            hoverOpenTimer.stop();
+            hoverCloseTimer.restart();
+        }
         onClicked: (mouse) => {
-            if (mouse.button === Qt.LeftButton) {
-               toggleNotifications.running = true;
-            } else if (mouse.button === Qt.RightButton) {
+            if (mouse.button === Qt.LeftButton)
+                toggleNotifications.running = true;
+            else if (mouse.button === Qt.RightButton)
                 toggleDnd.running = true;
-            } else if (mouse.button === Qt.MiddleButton) {
+            else if (mouse.button === Qt.MiddleButton)
                 clearHistory.running = true;
-            }
         }
     }
+
 }

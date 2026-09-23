@@ -6,10 +6,9 @@ import Quickshell.Io
 Rectangle {
     id: btPill
 
-    // Stati: OFF, ON, CONNECTED
+    // OFF, ON, CONNECTED
     property string btStatus: "OFF" 
 
-    // Stile base
     implicitHeight: 34
     implicitWidth: layout.implicitWidth + 20
     radius: height / 2

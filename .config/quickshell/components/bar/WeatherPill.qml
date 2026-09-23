@@ -1,28 +1,19 @@
 import "../.."
 import "../../services"
+import "../core"
 import QtQuick
 
-Rectangle {
+WidgetBase {
     id: root
+    type: "weather"
 
-    implicitHeight: 30
-    implicitWidth: label.implicitWidth + 24
-    radius: height / 2
-    color: Theme.darkgray
+    onClicked: WeatherService.refresh()
+    
 
     Text {
-        id: label
-        anchors.centerIn: parent
-        text: WeatherService.loading ? "…" : WeatherService.hasError ? "⚠ ERR" : WeatherService.icon + " " + WeatherService.temperature
+        text: WeatherService.loading ? "…" : WeatherService.hasError ? "⚠ ERR" : WeatherService.icon + "   " + WeatherService.temperature
         color: Theme.fg0
-        font.family: Theme.fontFamily
         font.pixelSize: 14
         font.bold: true
     }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: WeatherService.refresh()
-    }
-
 }

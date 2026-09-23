@@ -3,11 +3,21 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 
+import: "../../services" as QsServices
+
 Rectangle {
     id: audioPill
 
-    property int volume: 0
-    property bool isMuted: false
+readonly property var audio: QsServices.AudioService
+
+    property int volume: audio.percentage
+    property bool isMuted: audio.muted
+
+    Connections {
+        target: audio
+        function onPercentageChanged() { audioPill.volume = audio.percentage }
+        function onMutedChanged() { audioPill.isMuted = audio.muted }
+    }
 
     // Stile base
     implicitHeight: 34
@@ -26,7 +36,7 @@ Rectangle {
         onTriggered: readAudio.running = true
     }
 
-    Process {
+    /*Process {
         id: readAudio
         command: ["sh", "-c", "wpctl get-volume @DEFAULT_AUDIO_SINK@"]
         stdout: SplitParser {
@@ -41,7 +51,7 @@ Rectangle {
                 }
             }
         }
-    }
+    }*/
 
     RowLayout {
         id: layout

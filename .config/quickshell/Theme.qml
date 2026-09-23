@@ -14,6 +14,7 @@ QtObject {
     readonly property color fg2: "#d5c4a1"
     readonly property color fg3: "#bdae93"
     readonly property color fg4: "#a89984"
+    readonly property color surface: "#282828"
 
     readonly property color fgMuted: "#a89984"
     readonly property color hover: "#427b58"
@@ -48,4 +49,7 @@ QtObject {
     readonly property int workspaceRadius: 15
     readonly property int radius: 8
     readonly property string fontFamily: "Fira Sans Mono"
+
+    readonly property int animationDuration: 500;
+
 }

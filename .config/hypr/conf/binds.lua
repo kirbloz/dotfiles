@@ -14,6 +14,17 @@ hl.bind(mainMod .. " + ESCAPE",   hl.dsp.exec_cmd("wlogout"))
 hl.bind(mainMod .. " + W",        hl.dsp.exec_cmd("firefox"))
 hl.bind(mainMod .. " + N",        hl.dsp.exec_cmd("echo toggle > /tmp/qs-control-center"))
 hl.bind(mainMod .. " + O",        hl.dsp.exec_cmd("obsidian"))
+hl.bind(mainMod .. " + CTRL + W", hl.dsp.exec_cmd("qs -p ~/.config/hyprquickpaper"),
+	{ description = "Open HyprQuickPaper Wallpaper Picker" }
+)
+hl.bind(mainMod .. " + L",        hl.dsp.exec_cmd("hyprlock"))
+
+
+-------------------------
+-- SUNSETR BINDS
+-------------------------
+
+hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("sunsetr preset gaming"))
 
 -- Script & Reloads
 --hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("~/.config/ml4w/scripts/reload-waybar.sh"))

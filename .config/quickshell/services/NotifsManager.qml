@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "../"
 
 Item {
     id: notifManager
@@ -17,6 +18,12 @@ Item {
         dunstClearer.running = true;
     }
 
+      function removeFromList(id) {
+        notifManager.notificationsList = notifManager.notificationsList.filter(n => n.id !== id);
+        dunstRemover.command = ["dunstctl", "history-rm", String(id)];
+        dunstRemover.running = true;
+    }
+
     // poll dunst history
     Process {
         id: dunstFetcher
@@ -25,7 +32,7 @@ Item {
         running: false
 
         stdout: SplitParser {
-            splitMarker: "\n"
+           // splitMarker: "\n"
             onRead: (data) => {
                 if (!data || data.trim() === "")
                     return ;
@@ -54,7 +61,7 @@ Item {
     }
 
     Timer {
-        interval: 1000
+        interval: Settings.notifPollInterval
         running: true
         repeat: true
         triggeredOnStart: true
@@ -62,25 +69,20 @@ Item {
     }
 
     // DND
-    Process {
+     Process {
         id: dndToggleProcess
-
-        command: ["sh", "-c", "dunstctl set-paused toggle && pkill -RTMIN+8 waybar"]
-        running: false
+        command: ["dunstctl", "set-paused", "toggle"]
     }
 
-    // Clear
     Process {
         id: dunstClearer
-
         command: ["dunstctl", "history-clear"]
-        running: false
         onExited: dunstFetcher.running = true
     }
-    // dunstctl doesnt support single notif delete
-    // this is purely local, the notif re-appears on next poll
-    function removeFromList(id) {
-        notifManager.notificationsList = notifManager.notificationsList.filter(n => n.id !== id);
+
+    Process {
+        id: dunstRemover
+        onExited: dunstFetcher.running = true
     }
 
 }

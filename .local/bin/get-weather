@@ -1,0 +1,117 @@
+#!/bin/bash
+
+CACHE_FILE="/tmp/weather_cache.env"
+CACHE_TTL=1800 
+unit="c"
+
+# if cache is newer than 30 mins, use that
+if [ -f "$CACHE_FILE" ] && [ $(($(date +%s) - $(stat -c %Y "$CACHE_FILE"))) -lt $CACHE_TTL ]; then
+    source "$CACHE_FILE"
+else
+    # place coordinates
+    # --connect-timeout to avoid freeze in case you're offline
+    coords=$(curl -s --connect-timeout 5 https://ipinfo.io/loc)
+    if [ -z "$coords" ]; then coords="0,0"; fi
+    IFS=',' read -r latitude longitude <<< "$coords"
+
+    # place name
+    place_data=$(curl -s --connect-timeout 5 "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=$latitude&longitude=$longitude&localityLanguage=it")
+    if command -v jq &> /dev/null; then
+        city=$(echo "$place_data" | jq -r '.city // .locality // empty')
+        country=$(echo "$place_data" | jq -r '.countryName // empty')
+    else
+        city=$(echo "$place_data" | grep -o '"city":"[^"]*"' | head -1 | cut -d'"' -f4)
+        country=$(echo "$place_data" | grep -o '"countryName":"[^"]*"' | head -1 | cut -d'"' -f4)
+    fi
+    PLACE_NAME="${city:-Sconosciuto}${country:+, $country}"
+
+    # weather data
+    temp_unit=$([ "$unit" = "f" ] && echo "fahrenheit" || echo "celsius")
+    weather_data=$(curl -s --connect-timeout 5 "https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&current_weather=true&temperature_unit=$temp_unit&windspeed_unit=mph&hourly=relativehumidity_2m,apparent_temperature,precipitation,surface_pressure&timezone=auto")
+
+    # parsing JSON 
+    if command -v jq &> /dev/null; then
+        temperature=$(echo "$weather_data" | jq -r '.current_weather.temperature')
+        weathercode=$(echo "$weather_data" | jq -r '.current_weather.weathercode')
+        windspeed=$(echo "$weather_data" | jq -r '.current_weather.windspeed')
+
+        current_hour=$(date +%-H)
+        humidity=$(echo "$weather_data" | jq -r ".hourly.relativehumidity_2m[$current_hour]")
+        feels_like=$(echo "$weather_data" | jq -r ".hourly.apparent_temperature[$current_hour]")
+        precipitation=$(echo "$weather_data" | jq -r ".hourly.precipitation[$current_hour]")
+        pressure=$(echo "$weather_data" | jq -r ".hourly.surface_pressure[$current_hour]")
+
+        windspeed_unit=$(echo "$weather_data" | jq -r '.current_weather_units.windspeed // "mph"')
+        humidity_unit=$(echo "$weather_data" | jq -r '.hourly_units.relativehumidity_2m // "%"')
+        precipitation_unit=$(echo "$weather_data" | jq -r '.hourly_units.precipitation // "mm"')
+        pressure_unit=$(echo "$weather_data" | jq -r '.hourly_units.surface_pressure // "hPa"')
+    else
+        temperature=$(echo "$weather_data" | grep -o '"temperature":[0-9.]*' | head -1 | cut -d':' -f2)
+        weathercode=$(echo "$weather_data" | grep -o '"weathercode":[0-9]*' | head -1 | cut -d':' -f2)
+        windspeed=$(echo "$weather_data" | grep -o '"windspeed":[0-9.]*' | head -1 | cut -d':' -f2)
+        feels_like="N/A"
+        humidity="N/A"
+        precipitation="0"
+        pressure="N/A"
+        windspeed_unit="mph"
+        humidity_unit="%"
+        precipitation_unit="mm"
+        pressure_unit="hPa"
+    fi
+
+    # Map WMO weather codes to icons and descriptions
+    case "$weathercode" in
+        0) icon="󰖙"; condition="Clear" ;;
+        1|2) icon="󰖕"; condition="Partly Cloudy" ;;
+        3) icon="󰖐"; condition="Cloudy" ;;
+        45|48) icon="󰖑"; condition="Foggy" ;;
+        51|53|55) icon="󰖗"; condition="Drizzle" ;;
+        61|63|65) icon="󰖖"; condition="Rain" ;;
+        66|67) icon="󰙾"; condition="Freezing Rain" ;;
+        71|73|75) icon="󰖘"; condition="Snow" ;;
+        77) icon="󰼴"; condition="Snow Grains" ;;
+        80|81|82) icon="󰼳"; condition="Rain Showers" ;;
+        85|86) icon="󰼶"; condition="Snow Showers" ;;
+        95) icon="󰙾"; condition="Thunderstorm" ;;
+        96|99) icon="󰙾"; condition="Thunderstorm with Hail" ;;
+        *) icon=""; condition="Unknown" ;;
+    esac
+
+    # Format temperature
+    if [ "$unit" = "f" ]; then
+        temp_display="${temperature}°F"
+        feels_display="${feels_like}°F"
+    else
+        temp_display="${temperature}°C"
+        feels_display="${feels_like}°C"
+    fi
+
+    #tooltip="lat: $latitude\nlon: $longitude\n\n"
+    tooltip="󰴕   ${PLACE_NAME}\n"
+    #tooltip+="  Temp: ${temp_display}\n"
+    tooltip+="  Feels like: ${feels_display}\n"
+    tooltip+="$icon  Weather: $condition\n"
+    tooltip+="󰖌  Humidity: ${humidity}${humidity_unit}\n"
+    tooltip+="  Wind: ${windspeed} ${windspeed_unit}\n"
+    tooltip+="  Precipitation: ${precipitation} ${precipitation_unit}\n"
+    tooltip+="󱤊  Pressure: ${pressure} ${pressure_unit}"
+    #tooltip+="\n󰳽  Click to toggle °C/°F"
+    #echo "{\"text\":\"$icon $temp_display\",\"tooltip\":\"$tooltip\"}"
+
+    JSON_OUTPUT=$(printf '{"text":"%s %s","tooltip":"%s"}' "$icon" "$temp_display" "$tooltip")
+
+    # save to cache file
+    declare -p PLACE_NAME icon feels_display JSON_OUTPUT > "$CACHE_FILE"
+fi
+
+# output logic
+
+if [ "$1" = "city" ]; then
+    echo "$PLACE_NAME"
+elif [ "$1" = "feels_like" ]; then
+    echo "$feels_display"
+elif [ "$1" = "icon" ]; then
+    echo "$icon"
+else
+    echo "$JSON_OUTPUT"
+fi

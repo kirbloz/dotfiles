@@ -11,13 +11,13 @@ readonly STATE_FILE="$STATE_DIR/brightness.state"
 readonly APPLY_PID_FILE="$STATE_DIR/apply.pid"
 
 # I2C bus numbers for monitors (from ddcutil detect)
-readonly BUS_1=2
-readonly BUS_2=3
+readonly BUS_1=25
+readonly BUS_2=12
 
 mkdir -p "$STATE_DIR"
 
 declare -A DISPLAY_MAP=(
-  ["card1-HDMI-A-1"]="1"
+  ["card0-HDMI-A-2"]="1"
 )
 # Get brightness from first monitor
 get_hw_brightness() {

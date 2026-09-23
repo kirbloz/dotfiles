@@ -9,7 +9,7 @@ RowLayout {
     signal toggled(bool value)
 
     Layout.fillWidth: true
-    implicitHeight: content.implicitHeight
+    //implicitHeight: content.implicitHeight
 
     Text {
         text: "Do not disturb"

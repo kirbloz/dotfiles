@@ -32,7 +32,7 @@ hl.env("GDK_SCALE", "1")
 
 -- Hardware Acceleration & Driver Setup
 hl.env("LIBVA_DRIVER_NAME", "nvidia")
-hl.env("GBM_BACKEND", "nvidia-drm")
+--hl.env("GBM_BACKEND", "nvidia-drm")
 hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
 
 -- Electron / Chromium Hardware Acceleration
