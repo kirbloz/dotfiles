@@ -1,10 +1,11 @@
-import "."
 import "../.."
 import "../commons"
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
+
+/* not integrated anywhere rn*/
 
 ColumnLayout {
     id: recWidget
@@ -18,9 +19,9 @@ ColumnLayout {
 
         Text {
            text: {
-                if (ScreenRecorder.recording) return "🔴 Recording...";
-                if (ScreenRecorder.counting) return "⏳ Starting in " + ScreenRecorder.countdown + "s";
-                if (recWidget.choosingScreen) return "🖥️ Select Monitor";
+                if (ScreenRecorder.recording) return "Recording...";
+                if (ScreenRecorder.counting) return "Starting in " + ScreenRecorder.countdown + "s";
+                if (recWidget.choosingScreen) return "Select Monitor";
                 return "Record Screen";
             }
             color: ScreenRecorder.recording ? Theme.grvRed : Theme.fg0
@@ -28,7 +29,6 @@ ColumnLayout {
             Layout.fillWidth: true
         }
 
-        // Tasto Apri Cartella (visibile solo se non stiamo scegliendo lo schermo)
         Rectangle {
             visible: !recWidget.choosingScreen
             implicitWidth: 32
@@ -104,16 +104,15 @@ ColumnLayout {
     StackLayout {
         Layout.fillWidth: true
         currentIndex: {
-            if (ScreenRecorder.recording || ScreenRecorder.counting) return 2; // Mostra STOP / CANCEL
+            if (ScreenRecorder.recording || ScreenRecorder.counting) return 2; 
             if (recWidget.choosingScreen) return 1;
             return 0; 
         }
 
-        // View 0: Pulsanti Avvio Registrazione
+        // View 0
         RowLayout {
             spacing: 8
-            
-            // Pulsante Schermo Intero
+
             QuickButton {
                 Layout.fillWidth: true
                 text: "Full Screen"
@@ -131,7 +130,6 @@ ColumnLayout {
                 }
             }
 
-            // Pulsante Finestra / Area
             QuickButton {
                 Layout.fillWidth: true
                 text: "Area / Window"
@@ -142,7 +140,7 @@ ColumnLayout {
             }
         }
 
-        // View 1: Scelta del Monitor (Generata dinamicamente dal backend)
+        // View 1
         ColumnLayout {
             spacing: 8
             
@@ -160,19 +158,19 @@ ColumnLayout {
                     }
                 }
             }
-            // Tasto Annulla selezione monitor
+
             QuickButton {
                 Layout.fillWidth: true
                 text: "Cancel"
                 onClicked: choosingScreen = false
             }
         }
-        // View 2: Tasto STOP / CANCEL Countdown
+
         QuickButton {
             Layout.fillWidth: true
             text: ScreenRecorder.counting ? "Cancel Countdown" : "Stop Recording"
             active: true
-            activeColor: Theme.grvRed // 🔴 Sfrutta la nuova proprietà per farlo rosso!
+            activeColor: Theme.grvRed 
             onClicked: {
                 if (ScreenRecorder.recording) ScreenRecorder.stop();
                 if (ScreenRecorder.counting) ScreenRecorder.cancel();

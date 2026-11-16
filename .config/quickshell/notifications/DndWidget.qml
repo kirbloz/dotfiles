@@ -1,6 +1,13 @@
 import QtQuick
 import QtQuick.Layouts
-import ".."
+import qs 
+
+/*!
+    \qmltype DndWidget
+    \inqmlmodule notifications
+    \inherits RowLayout
+    \brief customized switch for do not disturb mode
+*/
 
 RowLayout {
     id: dndRoot
@@ -9,7 +16,6 @@ RowLayout {
     signal toggled(bool value)
 
     Layout.fillWidth: true
-    //implicitHeight: content.implicitHeight
 
     Text {
         text: "Do not disturb"

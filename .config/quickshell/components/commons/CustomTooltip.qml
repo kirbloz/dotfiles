@@ -1,11 +1,17 @@
 import QtQuick
 import Quickshell
-import "../.."
+import qs
 
+/*!
+    \qmltype CustomTooltip
+    \inqmlmodule components.commons
+    \inherits PopupWindow
+    \brief tooltip with customizable text; appears under anchor item 
+*/
 PopupWindow {
     id: root
 
-    required property Item anchorItem  // l'elemento a cui il tooltip è "agganciato"
+    required property Item anchorItem
     property string text: ""
     property bool show: false
 
@@ -14,8 +20,8 @@ PopupWindow {
     implicitWidth: label.implicitWidth + 16
     implicitHeight: label.implicitHeight + 12
 
-    // ancorato all'item stesso: le coordinate sono relative all'angolo
-    // in alto a sinistra dell'item, non alla finestra
+    // anchors itself onto referenced item
+    // -> top-left of the item, not the tooltip itself
     anchor.item: anchorItem
     anchor.rect.x: (anchorItem.width - implicitWidth) / 2
     anchor.rect.y: anchorItem.height + 6

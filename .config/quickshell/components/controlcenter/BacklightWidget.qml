@@ -2,15 +2,47 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Io
-import "../.."
+import qs
+
+/*!
+    \qmltype BackightWidget
+    \inherits Rectangle
+    \inqmlmodule components.controlcenter
+    \brief reads from service and displays current backlight status and offers a slider to adjust value
+
+    hardware backlight interface has to be specified
+
+    \note service works only for integrated screens on laptops; TODO add ddutil support
+
+    Example usage:
+    \code
+    import "../components/controlcenter"
+
+    BacklightWidget {
+        device: "amdgpu_bl1"
+        Layout.fillWidth: true
+    }
+    \endcode
+    */
 
 Rectangle {
     id: blRoot
 
-    // Deve combaciare col "device" in config.json
+    // TODO remove hardcoded idiot
+    /*!
+        \qmlproperty string BacklightWidget::device
+        target backlight device name as recognized by \c brightnessctl (e.g., \c {"amdgpu_bl1"}, \c {"intel_backlight"})
+        defaults to \c {"amdgpu_bl1"}
+    */
     property string device: "amdgpu_bl1"
+     /*!
+        \qmlproperty real BacklightWidget::brightness
+        normalized brightness level represented as a floating-point value between \c {0.0} (0%) and \c {1.0} (100%)
+        defaults to \c {0.5} (50%)
+    */
     property real brightness: 0.5 // 0..1
 
+    // ---- style and geometry ----
     color: Theme.bg2
     border.color: Theme.bg3
     border.width: 1
@@ -18,7 +50,7 @@ Rectangle {
     implicitHeight: content.implicitHeight + 16
     Layout.fillWidth: true
 
-    // 1. Legge la luminosità attuale da brightnessctl
+    /*! \internal reads current and maximum brightness from brightnessctl and computes the normalized ratio */
     Process {
         id: reader
 
@@ -35,7 +67,7 @@ Rectangle {
         }
     }
 
-    // 2. Polling ogni 2s (sospeso mentre trascini lo slider)
+    /*! \internal periodic 2s polling timer; pauses during slider drag */
     Timer {
         interval: 2000
         running: !slider.pressed
@@ -48,6 +80,7 @@ Rectangle {
 
     Process { id: setter }
 
+    // ---- user interface layout ----
     RowLayout {
         id: content
 
@@ -55,19 +88,19 @@ Rectangle {
         anchors.margins: 8
         spacing: 10
 
-        // Icona Luminosità
+        // brightness icon
         Text {
             text: "󰛩"
             color: Theme.fg1
             font.pixelSize: 18
         }
 
-        // Slider stilizzato
+        // interactive slider
         Slider {
             id: slider
 
             Layout.fillWidth: true
-            from: 0.02 // Evita di spegnere del tutto lo schermo
+            from: 0.02 // clamped to 2% to avoid turning off screen
             to: 1.0
             value: blRoot.brightness
 
@@ -77,6 +110,7 @@ Rectangle {
                 setter.running = true;
             }
 
+            // slider background
             background: Rectangle {
                 x: slider.leftPadding
                 y: slider.topPadding + slider.availableHeight / 2 - height / 2
@@ -86,6 +120,7 @@ Rectangle {
                 radius: 3
                 color: Theme.bg3
 
+                // active filled bar
                 Rectangle {
                     width: slider.visualPosition * parent.width
                     height: parent.height
@@ -94,6 +129,7 @@ Rectangle {
                 }
             }
 
+            // slider draggable handle
             handle: Rectangle {
                 x: slider.leftPadding + slider.visualPosition * (slider.availableWidth - width)
                 y: slider.topPadding + slider.availableHeight / 2 - height / 2
@@ -106,7 +142,7 @@ Rectangle {
             }
         }
 
-        // Indicatore Percentuale
+        // percentage text label
         Text {
             text: Math.round((slider.pressed ? slider.value : blRoot.brightness) * 100) + "%"
             color: Theme.fgMuted

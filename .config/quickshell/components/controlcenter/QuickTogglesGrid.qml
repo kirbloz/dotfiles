@@ -1,15 +1,22 @@
-import "../.."
+import qs
 import "../commons"
 import QtQuick.Layouts
+
+/*!
+    \qmltype QuickTogglesGrid
+    \inqmlmodule components.controlcenter
+    \inherits GridLayout
+    \brief widget with a grid-like buttons layout
+    */
 
 GridLayout {
     id:root
     columns: 2
     columnSpacing: 10
     rowSpacing: 10
-   // implicitHeight: content.implicitHeight
-   Layout.fillWidth: true
+    Layout.fillWidth: true
 
+    // deafen
     QuickButton {
         Layout.fillWidth: true
         text: "  Volume"
@@ -17,6 +24,7 @@ GridLayout {
         updateCommand: "wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q MUTED && echo false || echo true"
     }
 
+    // mute
     QuickButton {
         Layout.fillWidth: true
         text: " Microphone"
@@ -24,6 +32,7 @@ GridLayout {
         updateCommand: "wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED && echo false || echo true"
     }
 
+    // wifi
     QuickButton {
         Layout.fillWidth: true
         text: "󰖩 Wifi"
@@ -31,6 +40,7 @@ GridLayout {
         updateCommand: "nmcli radio wifi | grep -q enabled && echo true || echo false"
     }
 
+    // bluetooth
     QuickButton {
         Layout.fillWidth: true
         text: "󰂯 Bluetooth"
@@ -38,6 +48,7 @@ GridLayout {
         updateCommand: "bluetoothctl show | grep -q 'Powered: yes' && echo true || echo false"
     }
 
+    // airplane mode
     QuickButton {
         Layout.fillWidth: true
         text: "󰀝 Airplane Mode"

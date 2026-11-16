@@ -1,0 +1,16 @@
+module services
+
+singleton AudioService 1.0 AudioService.qml
+singleton BatteryService 1.0 BatteryService.qml
+singleton BluetoothService 1.0 BluetoothService.qml
+singleton BrightnessService 1.0 BrightnessService.qml
+singleton ClipService 1.0 Clip.qml
+singleton MprisService 1.0 MprisService.qml
+singleton NetworkService 1.0 NetworkService.qml
+singleton NotifsManager 1.0 NotifsManager.qml
+singleton PopupService 1.0 PopupService.qml
+singleton SelfTrackService 1.0 SelfTrackService.qml
+singleton SystemStats 1.0 SystemStats.qml
+singleton TimeService 1.0 TimeService.qml
+singleton WeatherService 1.0 WeatherService.qml
+

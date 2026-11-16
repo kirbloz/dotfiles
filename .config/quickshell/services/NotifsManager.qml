@@ -1,30 +1,47 @@
+pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
 import "../"
 
-Item {
+/*!
+    \qmltype NotifsManager
+    \inherits Singleton
+    \inqmlmodule services
+    \brief central service managing dunst notification history, DND state, and dismiss actions
+*/
+
+Singleton {
     id: notifManager
 
+    /*! \qmlproperty var NotifsManager::notificationsList
+        array of parsed notification objects: { id, appName, summary, body, urgency, iconPath } */
     property var notificationsList: []
+    readonly property int count: notificationsList.length
+    property bool isPaused: false // true = DND is on
 
     // public methods for shell.qml
     function toggleDnd() {
-        dndToggleProcess.running = true;
+        notifManager.isPaused = !notifManager.isPaused;
+         Quickshell.execDetached(["dunstctl", "set-paused", "toggle"]);
     }
 
     function clearHistory() {
         notifManager.notificationsList = [];
-        dunstClearer.running = true;
+        Quickshell.execDetached(["dunstctl", "history-clear"]);
     }
 
       function removeFromList(id) {
         notifManager.notificationsList = notifManager.notificationsList.filter(n => n.id !== id);
-        dunstRemover.command = ["dunstctl", "history-rm", String(id)];
-        dunstRemover.running = true;
+         Quickshell.execDetached(["dunstctl", "history-rm", String(id)]);
     }
 
-    // poll dunst history
+    function refresh() {
+        if (!dunstFetcher.running) dunstFetcher.running = true;
+        if (!dndStatusProcess.running) dndStatusProcess.running = true;
+    }
+
+    // poll dunst history fetch
     Process {
         id: dunstFetcher
 
@@ -32,7 +49,6 @@ Item {
         running: false
 
         stdout: SplitParser {
-           // splitMarker: "\n"
             onRead: (data) => {
                 if (!data || data.trim() === "")
                     return ;
@@ -60,21 +76,35 @@ Item {
 
     }
 
+    // periodic polling timer
     Timer {
-        interval: Settings.notifPollInterval
+        interval: (typeof Settings !== "undefined" && Settings.notifPollInterval) ? Settings.notifPollInterval : 2000
         running: true
         repeat: true
         triggeredOnStart: true
-        onTriggered: dunstFetcher.running = true
+        onTriggered: notifManager.refresh()
     }
 
-    // DND
-     Process {
+    
+     /*Process {
         id: dndToggleProcess
         command: ["dunstctl", "set-paused", "toggle"]
+    }*/
+
+    // fetch DND status
+    Process {
+        id: dndStatusProcess
+        command: ["dunstctl", "is-paused"]
+        running: true
+
+        stdout: SplitParser {
+            onRead: (line) => {
+                notifManager.isPaused = (line.trim() === "true");
+            }
+        }
     }
 
-    Process {
+    /*Process {
         id: dunstClearer
         command: ["dunstctl", "history-clear"]
         onExited: dunstFetcher.running = true
@@ -83,6 +113,6 @@ Item {
     Process {
         id: dunstRemover
         onExited: dunstFetcher.running = true
-    }
+    }*/
 
 }

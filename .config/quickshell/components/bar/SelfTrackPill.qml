@@ -1,17 +1,25 @@
-import "../.."
+import qs
+import qs.services
 import "../core"
 import QtQuick
 
 WidgetBase {
     id: root
-    type: "selftrack"
 
+    type: "selftrack"
     enableHover: true
-    bgHover: Theme.bg2
+    severity: "normal" 
+    
+    onClicked: {
+        console.log("[SelfTrackPill] Click detected, referenced popup:", root);
+        PopupService.toggle("selfTrack", root)
+    }
 
     Text {
         text: "󰔛"
-        color: Theme.fg0
+        color: root.severity === "warning" ? Theme.grvYellow : Theme.fg0
+        font.family: Theme.fontFamily
         font.pixelSize: 15
     }
+
 }

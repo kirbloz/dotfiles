@@ -1,11 +1,48 @@
 import QtQml
 import Quickshell
-import "components/effects"
+import "components/core"
 import "modules"
-import "monitors"
 import "osd"
+import "popups"
+import qs.services
 
 ShellRoot {
+
+    ControlCenter {
+        id: globalControlCenterPopup
+        Component.onCompleted: PopupService.register("controlCenter", this)
+    }
+
+    NotificationsCenter {
+        id: notifCenter
+        Component.onCompleted: PopupService.register("notifications", this)
+    
+    }
+
+    ModernDashboard {
+        id: globalDashboardPopup
+        Component.onCompleted: PopupService.register("dashboard", this)
+    }
+
+    NetworkPopup {
+        id: globalNetPopup
+        Component.onCompleted: PopupService.register("network", this)
+    }
+
+    SelfTrackPopup {
+        id: globalSelfTrackPopup
+        Component.onCompleted: PopupService.register("selfTrack", this)
+    }
+
+    CalendarPopup {
+        id: globalCalendarPopup
+        Component.onCompleted: PopupService.register("calendar", this)
+    }
+
+    SettingsWindow {
+        id: globalSettingsWindow
+    }
+
     // one monitor = one bar
     Scope {
         Instantiator {
@@ -13,78 +50,39 @@ ShellRoot {
 
             delegate: TopBar {
                 id: bar
-
-                //  screen: modelData
                 visible: true
-                onOpenNotifCenterRequested: notifCenter.visible = !notifCenter.visible
-                onOpenControlCenterRequested: controlCenter.visible = !controlCenter.visible
-                onOpenSelfTrackRequested: selftrackWindow.visible = !selftrackWindow.visible
             }
 
         }
 
-    }
+        Instantiator {
+            model: Quickshell.screens
 
-    ControlCenter {
-        id: controlCenter
+            delegate: InstantiatorOSDs {
+                required property var modelData
+                screen: modelData
+            }
 
-        visible: false
-    }
-
-    NotificationsCenter {
-        id: notifCenter
-    }
-
-    SystemDashboard {
-        id: dashboard
-    }
-
-    Instantiator {
-        model: Quickshell.screens
-
-        delegate: InstantiatorOSDs {
-            required property var modelData
-
-            screen: modelData
         }
 
-    }
+        Variants {
+            model: Quickshell.screens
 
- PanelWindow {
-        id: selftrackWindow
+            CornerFlyout {
+                required property var modelData
+                screen: modelData
 
-        // 1. Parte nascosto (si aprirà dal bottone)
-        visible: false 
-        // 2. FONDAMENTALE: Sfondo trasparente per far vedere l'ombra
-        color: "transparent" 
-
-        // 3. Aggiungiamo 28px di spazio extra per l'ombra (14 per lato)
-        implicitWidth: 380 + 28
-        implicitHeight: 520 + 28
-
-        anchors {
-            top: true
-            left: true // o right: true, a seconda di dove hai il modulo nella topbar
-        }
-
-        margins {
-            top: 10
-            left: 200 // Aggiusta questi margini per allinearlo sotto il bottone
-        }
-
-        ExpandingGlowPanel {
-            // 4. Invece di riempire la finestra, gli diamo la dimensione esatta e lo centriamo
-            width: 380
-            height: 520
-            anchors.centerIn: parent 
-            
-            expanded: selftrackWindow.visible
-
-            SelfTrackMonitor {
-                anchors.fill: parent
-                anchors.margins: 14 // Margine interno, come nel Control Center
-                settings: Settings
+                onOpenSettingsRequested: {
+                    globalSettingsWindow.open();
+                }
+                onOpenDashboardRequested: {if (typeof globalDashboardPopup !== "undefined")
+                        globalDashboardPopup.isOpen = !globalDashboardPopup.isOpen;
+                }
             }
         }
+
     }
+
+    
+
 }

@@ -1,11 +1,17 @@
 import "../components/osd" 
-import "../services" as QsServices
+import qs.services as QsServices
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 
+/*!
+    \qmltype BrightnessOSD
+    \inherits BubbleOSD
+    \inqmlmodule osd
+    \brief lightweight on-screen display brightness feedback
+*/
 
 BubbleOSD{
     id:root

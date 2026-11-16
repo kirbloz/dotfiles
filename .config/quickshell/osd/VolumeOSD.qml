@@ -1,13 +1,21 @@
 
+// https://github.com/tripathiji1312/quickshell/blob/main/modules/osd/VolumeOSD.qml
+
 import "../components/osd" 
-import "../services" as QsServices
+import qs.services as QsServices
+
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
-// https://github.com/tripathiji1312/quickshell/blob/main/modules/osd/VolumeOSD.qml
 import Quickshell
 import Quickshell.Wayland
 
+/*!
+    \qmltype VolumeOSD
+    \inherits BubbleOSD
+    \inqmlmodule osd
+    \brief lightweight on-screen display volume feedback
+*/
 
 BubbleOSD{
     id:root

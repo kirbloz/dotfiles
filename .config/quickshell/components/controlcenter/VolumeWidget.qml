@@ -2,12 +2,16 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Io
-import "../.."
+import qs
+
+/*
+    as of now, this is useful only when using the primary audio device. it cannot adapt or anything fancy
+*/
 
 Rectangle {
     id: volRoot
 
-    property real volume: 0 // Valore da 0.0 a 1.0
+    property real volume: 0 // 0..1
     property bool muted: false
 
     color: Theme.bg2
@@ -17,7 +21,7 @@ Rectangle {
     implicitHeight: content.implicitHeight + 16
     Layout.fillWidth: true
 
-    // 1. Legge il volume attuale da wpctl
+    // reads current volume 
     Process {
         id: reader
         command: ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]
@@ -30,7 +34,7 @@ Rectangle {
         }
     }
 
-    // 2. Timer di polling (in pausa mentre si trascina lo slider)
+    // polling timer, paused when setting slider
     Timer {
         interval: 1500
         running: !slider.pressed
@@ -41,7 +45,7 @@ Rectangle {
         }
     }
 
-    // 3. Esegue wpctl set-volume al movimento dello slider con debounce
+    // runs wpctl set-volume on setting slider
     Timer {
         id: setDebounce
         interval: 30
@@ -54,7 +58,7 @@ Rectangle {
 
     Process { id: setter }
 
-    // 4. Toggle del Mute
+    // mute toggle
     Process {
         id: muteToggle
         command: ["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]
@@ -63,13 +67,13 @@ Rectangle {
         }
     }
 
+    // ---- view ---- 
     RowLayout {
         id: content
         anchors.fill: parent
         anchors.margins: 8
         spacing: 10
 
-        // Icona Mute/Unmute
         Text {
             text: volRoot.muted ? "󰝟" : "󰕾"
             color: volRoot.muted ? Theme.grvRed : Theme.fg1
@@ -82,7 +86,7 @@ Rectangle {
             }
         }
 
-        // Slider
+        //TODO fix this
         Slider {
             id: slider
             Layout.fillWidth: true
@@ -121,7 +125,7 @@ Rectangle {
             }
         }
 
-        // Percentuale
+        // percentage value
         Text {
             text: Math.round((slider.pressed ? slider.value : volRoot.volume) * 100) + "%"
             color: Theme.fgMuted

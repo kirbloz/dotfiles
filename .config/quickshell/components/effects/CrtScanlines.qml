@@ -1,8 +1,23 @@
 import QtQuick
 
+/*!
+    \qmltype CrtScanlines
+    \inherits Item
+    \inqmlmodule components.effects
+    \brief CRT scanline overlay and subtle flicker effect
+*/
+
 Item {
     id: root
 
+    Image {
+        anchors.fill: parent
+        fillMode: Image.Tile
+        opacity: 0.2
+        smooth: false
+        source: "scanline.png"
+    }
+    /* old method
     Canvas {
         anchors.fill: parent
         opacity: 0.12
@@ -18,12 +33,12 @@ Item {
                 ctx.stroke();
             }
         }
-    }
+    }*/
 
     // CRT Flicker
     SequentialAnimation on opacity {
         loops: Animation.Infinite
-        running: true
+        running: root.visible && root.opacity > 0.1
 
         NumberAnimation {
             to: 0.96
@@ -40,7 +55,4 @@ Item {
         }
 
     }
-
-    
-
 }

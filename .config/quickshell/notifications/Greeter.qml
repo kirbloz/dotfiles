@@ -2,18 +2,21 @@ import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell.Io
-import ".."
+import qs
 
-// "bentornato": avatar circolare + saluto in base all'ora
-// Se l'immagine non si trova, cade su un cerchio con l'iniziale del nome.
+/*! 
+    \qmltype Greeter
+    \inqmlmodule notifications
+    \inherits RowLayout
+    \brief circular avatar based on profile picture from \c "file:///var/lib/AccountsService/icons/username" with a little greeting based on the time
+    if the requested image doesnt exits, fallback to empty circle with username initial
+*/
+
 RowLayout {
     id: greeterRoot
 
     property string username: ""
-    // Sovrascrivi questa property da ControlCenter.qml se il path di
-    // default non esiste sulla tua distro, es:
-    // Greeter { avatarSource: "file:///home/tuoutente/.face" }
-    property string avatarSource: username !== "" ? ("file:///var/lib/AccountsService/icons/" + username) : ""
+    readonly property string avatarSource: username !== "" ? ("file:///var/lib/AccountsService/icons/" + username) : ""
 
     function greetingText() {
         const h = new Date().getHours();
@@ -21,12 +24,12 @@ RowLayout {
             return "Still awake?";
 
         if (h < 12)
-            return "Hello";
+            return "Let's get crackin'";
 
         if (h < 18)
-            return "What's poppin'";
+            return "Are you procrastinating?";
 
-        return "Good evening Sir";
+        return "Good evening";
     }
 
     Layout.fillWidth: true
@@ -34,10 +37,8 @@ RowLayout {
 
     Process {
         id: whoami
-
         command: ["whoami"]
         running: true
-
         stdout: SplitParser {
             onRead: (line) => {
                 return greeterRoot.username = line.trim();
@@ -47,7 +48,6 @@ RowLayout {
     }
 
     Item {
-        // Fallback: cerchio con iniziale se l'avatar non esiste/non è leggibile
         id: avatarBox
 
         implicitWidth: 52
@@ -108,7 +108,7 @@ RowLayout {
 
         }
 
-        // Bordo decorativo, sempre sopra (immagine o fallback)
+        // circle border 
         Rectangle {
             anchors.fill: parent
             radius: width / 2

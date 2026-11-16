@@ -1,11 +1,17 @@
 import QtQuick
 import QtQuick.Layouts
-import "../.."
+import qs
 
+/*! \qmltype Header
+    \qmlmodule components.commons
+    reusable window header with title and close button
+*/
 RowLayout {
     id: root
     Layout.fillWidth: true
 
+    /*! \qmlproperty string Header::title
+        */
     property string title: ""
     signal closeRequested()
 

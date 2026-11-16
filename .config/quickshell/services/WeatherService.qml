@@ -3,26 +3,34 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
+/*!
+    \qmltype WeatherService
+    \inherits Singleton
+    \inqmlmodule services
+    \brief local weather scraper and periodic temperature update daemon
+*/
+
 Singleton {
     id: root
 
-    readonly property int refreshIntervalMs: 900 * 1000
+    readonly property int refreshIntervalMs: 600000 // 10 min
+    readonly property string scriptPath: Quickshell.env("HOME") + Settings.weatherScriptPath
 
     property string icon: ""
     property string temperature: "--°"
-    property string tooltip: "Caricamento meteo..."
+    property string tooltip: "Loading.."
     property bool loading: true
     property bool hasError: false
 
     function refresh() {
-        weatherProcess.running = true
+        if (!weatherProcess.running) weatherProcess.running = true;
     }
 
     Component.onCompleted: refresh()
 
     Process {
         id: weatherProcess
-        command: ["/home/giovanni/.local/bin/get-weather"]
+        command: [root.scriptPath]
 
         stdout: StdioCollector {
             onStreamFinished: {
@@ -34,7 +42,7 @@ Singleton {
                     root.tooltip = data.tooltip
                     root.hasError = false
                 } catch (e) {
-                    console.warn("WeatherService: impossibile parsare l'output dello script:", e)
+                    console.warn("[WeatherService] parsing error:", e)
                     root.hasError = true
                 } finally {
                     root.loading = false

@@ -2,11 +2,21 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
+/*!
+    \qmltype TimeService
+    \inherits Singleton
+    \inqmlmodule services
+    \brief central system clock and localized date/time formatter
+*/
+
+
 Singleton {
     id: root
 
     property real currentTimestamp: Date.now()
     readonly property date currentDate: new Date(currentTimestamp)
+    readonly property var dayNames: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+    readonly property var monthNames: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dec"]
 
     Timer {
         interval: 1000
@@ -21,9 +31,8 @@ Singleton {
         const hours = String(date.getHours()).padStart(2, '0')
         const minutes = String(date.getMinutes()).padStart(2, '0')
         const seconds = String(date.getSeconds()).padStart(2, '0')
-        const dayName = ["Dom","Lun","Mar","Mer","Gio","Ven","Sab"][date.getDay()]
+        const dayName = dayNames[date.getDay()]
         const dayNum = String(date.getDate()).padStart(2, '0')
-        const monthNames = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"]
         const monthName = monthNames[date.getMonth()]
 
         if (showSeconds)
@@ -33,8 +42,6 @@ Singleton {
 
     function formatDate(date) {
         if (!date) date = root.currentDate
-        const dayNames = ["Dom","Lun","Mar","Mer","Gio","Ven","Sab"]
-        const monthNames = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"]
         return dayNames[date.getDay()] + " " + String(date.getDate()).padStart(2, '0') + " " + monthNames[date.getMonth()]
     }
 

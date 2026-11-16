@@ -1,5 +1,4 @@
 // user7334895 from quickshills discord server
-
 // Credits: caelestia shell
 
 pragma Singleton
@@ -113,9 +112,12 @@ Singleton {
 
     if (playing) {
       root.currentPlayer = playing;
-    } else if (!root.currentPlayer && root.players.length > 0) {
+    } else if (root.currentPlayer && root.players.includes(root.currentPlayer)) {
+      root.currentPlayer = root.currentPlayer;
+    } else if (root.players.length > 0){
       root.currentPlayer = root.players[0];
     } else {
+      // ONLY WHEN no open players @ sys level
       root.currentPlayer = null;
     }
 
@@ -176,9 +178,6 @@ Singleton {
         root.refreshCurrentPlayer();
       }
 
-      /*function onPlaybackStateChanged(): void {
-        root.refreshCurrentPlayer(); 
-      }*/
     }
   }
 }

@@ -1,7 +1,11 @@
 import QtQuick
 import Quickshell.Hyprland
-import "../.."
+import qs
 
+/*! \qmltype WorkspaceBtn
+    \inherits Rectangle
+    \brief represents one workspace, is clickable and changes colors based on status
+*/
 Rectangle {
     id: root
 
@@ -15,7 +19,7 @@ Rectangle {
     property bool occupied: !!(hyprWs && hyprWs.toplevels.values.length > 0)
     property bool hovered: mouseArea.containsMouse
 
-    // hover > focused > active > occupato > vuoto
+    // hover > focused > active > occupied > empty
     readonly property string variant: hovered ? "hover"
                                      : focused ? "focused"
                                      : active  ? "active"
@@ -51,8 +55,6 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-        //dispatch hl.dsp.focus({workspace = 1})
-        //onClicked: Hyprland.dispatch("workspace " + root.wsId)
         onClicked: Hyprland.dispatch("hl.dsp.focus({workspace = " + root.wsId + "})")
     }
 }

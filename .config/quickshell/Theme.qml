@@ -9,6 +9,7 @@ QtObject {
     readonly property color bg2: "#504945"
     readonly property color bg3: "#665c54"
     readonly property color bg4: "#7c6f64"
+    
     readonly property color fg0: "#fbf1c7"
     readonly property color fg1: "#ebdbb2"
     readonly property color fg2: "#d5c4a1"
@@ -38,14 +39,14 @@ QtObject {
 
 
     readonly property color workspaceBgEmpty: "transparent"
-    readonly property color workspaceBgActive: darkgray       // #171717 — pill, come .active/.visible nel CSS
-    readonly property color workspaceBgFocused: darkgray      // stesso colore: il vecchio CSS non li distingueva
-    readonly property color workspaceBgHover: "#b3fabd2f"     // grvYellow al 70% alpha (b3 = 0.7 * 255), come alpha(@workspacecolor, 0.7)
+    readonly property color workspaceBgActive: darkgray       // #171717
+    readonly property color workspaceBgFocused: darkgray      
+    readonly property color workspaceBgHover: "#b3fabd2f"     // grvYellow 70% alpha (b3 = 0.7 * 255),  alpha(@workspacecolor, 0.7)
 
     readonly property color workspaceFgEmpty: fg1              // @textcolor1
     readonly property color workspaceFgActive: grvYellow       // @workspacecolor
-    readonly property color workspaceFgFocused: grvYellow      // stesso, il CSS non li distingueva
-    readonly property color workspaceFgHover: darkgray         // @workspacebackground1 (#171717), come nel :hover del CSS
+    readonly property color workspaceFgFocused: grvYellow     
+    readonly property color workspaceFgHover: darkgray         // @workspacebackground1 (#171717),  :hover CSS
     readonly property int workspaceRadius: 15
     readonly property int radius: 8
     readonly property string fontFamily: "Fira Sans Mono"

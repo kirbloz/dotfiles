@@ -1,25 +1,48 @@
+pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
-pragma Singleton
+
+import "../scripts/nmcli.js" as Nmcli
+
+/*
+ * NetworkService handles status and runs command. 
+ * components are view only
+ * data is retrieved via nmcli API and parsed by nmcli.js; 
+ * service exposes information to other components 
+ */
+
+ // FIXME this service has many Processes and is heavier than others
 
 Singleton {
     id: root
 
     property string netType: "DISCONNECTED"
-    // "WIFI" | "ETH" | "DISCONNECTED"
-    property string ifName: ""
-    property int sigStrength: 0
     property string connectedWifi: ""
+    property int sigStrength: 0
+    property string ifName: ""
+    property string deviceIp: "N/A"
+    property string gatewayIp: "N/A"
+    property string hostname: ""
+    property bool wifiEnabled: true
+    property var networks: []  // [{ ssid, strength, inUse, secured }]
+    property bool connecting: false
+    property string connectError: ""
+
+    // nmcli monitor notifies state changes
+    // for wifi signal information, an explicit read is needed
+    readonly property int sigRefreshMs: 100000
+
+
     readonly property string tooltipText: {
         let lines = [];
         if (netType === "WIFI") {
             let name = connectedWifi.length > 0 ? connectedWifi : ifName;
-            lines.push(name + " # " + sigStrength + "%");
+            lines.push(name + " (" + sigStrength + "%)");
         } else if (netType === "ETH") {
-            lines.push("" + ifName);
+            lines.push("Ethernet: " + ifName);
         } else {
-            lines.push("Disconnesso");
+            lines.push("Disconnected");
         }
         if (netType !== "DISCONNECTED") {
             lines.push("IP: " + deviceIp);
@@ -27,73 +50,215 @@ Singleton {
         }
         if (hostname.length > 0)
             lines.push("Host: " + hostname);
-
         return lines.join("\n");
     }
-    property string deviceIp: "N/A"
-    property string gatewayIp: "N/A"
-    property string hostname: ""
+
+    signal connectFinished(bool success)
+
+    function setWifiEnabled(enabled) {
+        _run(radioSetProc, ["nmcli", "radio", "wifi", enabled ? "on" : "off"]);
+    }
+
+    function scanWifi() {
+        if (wifiEnabled)
+            _listWifi(true);
+    }
+
+    function connectToWifi(ssid, password) {
+        if (connecting)
+            return;
+        connectError = "";
+        connecting = true;
+        const cmd = ["nmcli", "device", "wifi", "connect", ssid];
+        if (password && password.length > 0)
+            cmd.push("password", password);
+        _run(connectProc, cmd);
+    }
+
+    function disconnectWifi() {
+        if (ifName !== "")
+            _run(disconnectProc, ["nmcli", "device", "disconnect", ifName]);
+    }
+
+    function clearConnectError() {
+        connectError = "";
+    }
+
+    function refresh() {
+        refreshDebounce.restart();
+    }
+
+    // ── Interno ───────────────────────────────────────────────────────────
+    // `running = true` su un Process già attivo è un no-op: lo evitiamo esplicitamente.
+    function _run(proc, command) {
+        if (proc.running)
+            return false;
+        if (command)
+            proc.command = command;
+        proc.running = true;
+        return true;
+    }
+
+    function _listWifi(rescan) {
+        _run(wifiListProc, ["nmcli", "-t", "-f", "IN-USE,SSID,SIGNAL,SECURITY", "device", "wifi", "list", "--rescan", rescan ? "auto" : "no"]);
+    }
+
+    function _applyDevices(text) {
+        const dev = Nmcli.activeDevice(Nmcli.parseDevices(text));
+        if (!dev) {
+            netType = "DISCONNECTED";
+            connectedWifi = "";
+            sigStrength = 0;
+            ifName = "";
+            deviceIp = "N/A";
+            gatewayIp = "N/A";
+        } else {
+            ifName = dev.device;
+            if (dev.type === "wifi") {
+                netType = "WIFI";
+                connectedWifi = dev.connection;
+                _run(signalProc);
+            } else {
+                netType = "ETH";
+                connectedWifi = "";
+                sigStrength = 100;
+            }
+            _run(ipProc, ["nmcli", "-t", "-f", "IP4.ADDRESS,IP4.GATEWAY", "device", "show", dev.device]);
+        }
+        if (wifiEnabled)
+            _listWifi(false);
+    }
+
+    Component.onCompleted: _run(radioReadProc)
+
+    // Pipeline di refresh: radio -> stato device -> (ip, segnale, lista reti)
+    Process {
+        id: radioReadProc
+
+        command: ["nmcli", "radio", "wifi"]
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.wifiEnabled = (this.text.trim() === "enabled");
+                if (!root.wifiEnabled)
+                    root.networks = [];
+                root._run(stateProc);
+            }
+        }
+    }
 
     Process {
-        id: statusProcess
+        id: stateProc
 
-        command: ["sh", "-c", "for i in /sys/class/net/*/; do " + "  IF=$(basename $i); " + "  case $IF in lo|docker*|veth*|br-*|virbr*|tailscale*) continue;; esac; " + "  STATE=$(cat /sys/class/net/$IF/operstate 2>/dev/null); " + "  if [ \"$STATE\" = \"up\" ]; then " + "    if [ -d /sys/class/net/$IF/wireless ]; then " + "      SIG=$(awk -v ifc=\"$IF:\" '$1==ifc {print int($3 * 100 / 70)}' /proc/net/wireless 2>/dev/null); " + "      TYPE=WIFI; " + "    else " + "      SIG=100; TYPE=ETH; " + "    fi; " + "    IP=$(ip -4 addr show \"$IF\" 2>/dev/null | awk '/inet /{print $2}' | cut -d/ -f1); " + "    GW=$(ip route show default 2>/dev/null | awk '{print $3; exit}'); " + "    echo \"$TYPE $SIG $IF ${IP:-N/A} ${GW:-N/A}\"; exit; " + "  fi; " + "done; " + "echo \"DISCONNECTED 0 none N/A N/A\""]
+        command: ["nmcli", "-t", "-f", "TYPE,DEVICE,STATE,CONNECTION", "device"]
 
-        stdout: SplitParser {
-            onRead: (data) => {
-                const parts = data.trim().split(" ");
-                if (parts.length < 5)
-                    return ;
+        stdout: StdioCollector {
+            onStreamFinished: root._applyDevices(this.text)
+        }
+    }
 
-                const previousType = root.netType;
-                root.netType = parts[0];
-                const sig = parseInt(parts[1]);
-                root.sigStrength = isNaN(sig) ? 0 : Math.min(sig, 100);
-                root.ifName = parts[2];
-                root.deviceIp = parts[3];
-                root.gatewayIp = parts[4];
-                if (root.netType === "WIFI" && previousType !== "WIFI")
-                    wifiNameProcess.running = true;
-                else if (root.netType !== "WIFI")
-                    root.connectedWifi = "";
+    Process {
+        id: ipProc
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const r = Nmcli.parseIp4(this.text);
+                root.deviceIp = r.ip;
+                root.gatewayIp = r.gateway;
+            }
+        }
+    }
+
+    Process {
+        id: signalProc
+
+        command: ["nmcli", "-t", "-f", "IN-USE,SIGNAL", "device", "wifi", "list", "--rescan", "no"]
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                if (root.netType === "WIFI")
+                    root.sigStrength = Nmcli.parseInUseSignal(this.text);
+            }
+        }
+    }
+
+    Process {
+        id: wifiListProc
+
+        stdout: StdioCollector {
+            onStreamFinished: root.networks = Nmcli.parseWifiList(this.text)
+        }
+    }
+
+    Process {
+        id: radioSetProc
+
+        onExited: root.refresh()
+    }
+
+    Process {
+        id: connectProc
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                const msg = Nmcli.cleanError(this.text);
+                if (msg !== "")
+                    root.connectError = msg;
             }
         }
 
+        onExited: (code, exitStatus) => {
+            root.connecting = false;
+            if (code !== 0 && root.connectError === "")
+                root.connectError = "Connessione fallita";
+            root.connectFinished(code === 0);
+            root.refresh();
+        }
     }
 
     Process {
-        id: hostnameProcess
+        id: disconnectProc
+
+        onExited: root.refresh()
+    }
+
+    Process {
+        id: hostnameProc
 
         command: ["hostname"]
         running: true
 
-        stdout: SplitParser {
-            onRead: (data) => {
-                return root.hostname = data.trim();
-            }
+        stdout: StdioCollector {
+            onStreamFinished: root.hostname = this.text.trim()
         }
-
     }
 
+    // event listener
     Process {
-        id: wifiNameProcess
+        id: netMonitor
 
-        command: ["sh", "-c", "iwgetid -r 2>/dev/null"]
+        command: ["nmcli", "monitor"]
+        running: true
 
         stdout: SplitParser {
-            onRead: (data) => {
-                return root.connectedWifi = data.trim();
-            }
+            onRead: root.refresh()
         }
-
     }
 
     Timer {
-        interval: 3000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: statusProcess.running = true
+        id: refreshDebounce
+
+        interval: 2000
+        onTriggered: root._run(radioReadProc)
     }
+  
+    // signal
+    Timer {
+        interval: root.sigRefreshMs
+        repeat: true
+        running: root.netType === "WIFI" && tooltipText.show 
+        onTriggered: root._run(signalProc)
+    }
+   
 
 }

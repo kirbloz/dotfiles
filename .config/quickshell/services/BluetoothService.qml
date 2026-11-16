@@ -1,7 +1,8 @@
+pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Bluetooth
-pragma Singleton
+
 
 Singleton {
     id: root
@@ -13,18 +14,16 @@ Singleton {
     readonly property bool hasConnection: connectionCount > 0
     readonly property string status: !powered ? "OFF" : (hasConnection ? "CONNECTED" : "ON")
     readonly property string primaryDeviceName: hasConnection ? connectedDevices.values[0].name : ""
-
     readonly property string tooltipText: {
         if (!powered)
-            return "Bluetooth spento";
+            return "Bluetooth off";
 
         if (!hasConnection)
-            return (adapter ? adapter.name : "Bluetooth") + "\n0 connessi";
+            return (adapter ? adapter.name : "Bluetooth") + "\n0 connected";
 
-        let lines = [adapter.name, connectionCount + " connessi"];
+        let lines = [adapter.name, connectionCount + " connected"];
         for (const dev of connectedDevices.values) lines.push(dev.name)
         return lines.join("\n");
     }
-
 
 }

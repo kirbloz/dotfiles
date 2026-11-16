@@ -1,4 +1,4 @@
-import ".."
+import qs
 import QtQuick
 import QtQuick.Layouts
 
@@ -6,7 +6,7 @@ Rectangle {
     id: cardRoot
 
     property var notif: null
-    property string appName: notif ? (notif.appName || "Sistema") : "Sistema"
+    property string appName: notif ? (notif.appName || "System") : "System"
     property string summary: notif ? notif.summary : ""
     property string body: notif ? notif.body : ""
     property string time: ""
@@ -40,7 +40,7 @@ Rectangle {
         anchors.leftMargin: isCritical ? 14 : 10
         spacing: 6
 
-        // Header
+        // ---- header ----
         RowLayout {
             Layout.fillWidth: true
 
@@ -64,7 +64,7 @@ Rectangle {
                 visible: text !== ""
             }
 
-            // Tasto Chiudi Notifica
+            // close notification button
             Rectangle {
                 implicitWidth: 18
                 implicitHeight: 18
@@ -95,7 +95,7 @@ Rectangle {
             }
         }
 
-        // Summary
+        // summary
         Text {
             Layout.fillWidth: true
             text: summary
@@ -106,7 +106,7 @@ Rectangle {
             elide: Text.ElideRight
         }
 
-        // Body
+        // body
         Text {
             Layout.fillWidth: true
             text: body
