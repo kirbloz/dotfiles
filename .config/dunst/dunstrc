@@ -1,7 +1,7 @@
 [global]
     monitor = 0
     follow = mouse
-    width = 400
+    width = 200
     height = 110
     offset = 15x45
     origin = top-right
@@ -15,7 +15,8 @@
     # tornare a Fira Sans Mono per fedeltà totale, oppure tenere Nerd Font se
     # ti serve per notifiche che includono glyph. Lascio Nerd Font di default
     # visto che partivi da lì.
-    font = JetBrainsMono Nerd Font 10
+    font = Fira Sans Mono 10
+    #JetBrainsMono Nerd Font 10
     line_height = 2
     format = "<b>%s</b>\n%b"
     alignment = left
@@ -52,8 +53,5 @@
     background = "#353535"
     foreground = "#ebdbb2"
     border_color = "#fb4934"
-    # swaync (config.json: "timeout-critical": 6) non teneva le critical
-    # sticky — se preferisci che restino finché non le chiudi tu manualmente,
-    # rimetti timeout = 0.
-    timeout = 6
+    timeout = 10
 
