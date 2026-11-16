@@ -6,7 +6,7 @@
 
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 
--- 1. Monitor Principale (HDMI-A-1) - 1080p @ 180Hz 
+-- main screen (HDMI-A-1) - 1080p @ 180Hz 
 hl.monitor({
     output   = "HDMI-A-2",
     mode     = "1920x1080@180",
@@ -14,7 +14,7 @@ hl.monitor({
     scale    = 1,
 })
 
--- 2. Schermo del Portatile (eDP-1) - 1080p @ 60Hz posizionato a sx
+-- secondary screen (eDP-1) - 1080p @ 144Hz on the left
 hl.monitor({
     output   = "eDP-1",
     mode     = "1920x1080@144",
@@ -22,7 +22,7 @@ hl.monitor({
     scale    = 1,
 })
 
--- 3. Fallback per qualsiasi altro monitor extra collegato
+-- fallback 
 hl.monitor({
     output   = "",
     mode     = "preferred",

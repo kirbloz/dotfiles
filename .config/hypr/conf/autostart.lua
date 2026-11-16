@@ -12,17 +12,18 @@ hl.on("hyprland.start", function()
     -- main apps
     hl.exec_cmd(terminal)
     hl.exec_cmd(bar)
-    hl.exec_cmd("hyprpaper -c '/home/giovanni/.config/hypr/hyprpaper.conf'")
+    hl.exec_cmd("hyprpaper -c '/home/YOU/.config/hypr/hyprpaper.conf'")
 
     -- tray and sys services
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
     hl.exec_cmd("wl-paste --type image --watch cliphist store")
-    hl.exec_cmd("hypridle")
+    -- AS OF NOVEMBER 2026 HYPRLAND HAS ISSUES WITH IDLE, LOCK, DRM ETC
+    -- commenting this one out to avoid many headaches for the time being
+    --hl.exec_cmd("hypridle")
     --hl.exec_cmd("hyprsunset")
     hl.exec_cmd("sunsetr")
-    hl.exec_cmd("selftrack daemon &")
-    hl.exec_cmd("awww-daemon")
-    --hl.exec_cmd("qs")
+    -- using systemd service
+    --hl.exec_cmd("selftrack daemon")
     -- bluetooth is accessed via wayland module
     --hl.exec_cmd(applet_bluetooth)
     -- network is accessed via wayland module

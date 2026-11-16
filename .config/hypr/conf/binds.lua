@@ -18,6 +18,7 @@ hl.bind(mainMod .. " + CTRL + W", hl.dsp.exec_cmd("qs -p ~/.config/hyprquickpape
 	{ description = "Open HyprQuickPaper Wallpaper Picker" }
 )
 hl.bind(mainMod .. " + L",        hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. " + I",        hl.dsp.exec_cmd("quickshell ipc call settings toggle"))
 
 
 -------------------------
@@ -26,33 +27,30 @@ hl.bind(mainMod .. " + L",        hl.dsp.exec_cmd("hyprlock"))
 
 hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("sunsetr preset gaming"))
 
--- Script & Reloads
---hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("~/.config/ml4w/scripts/reload-waybar.sh"))
-
 --------------------------
 -- HYPRSHOT BINDS
 --------------------------
 
--- Seleziona un'area (SUPER + SHIFT + S)
+-- area (SUPER + SHIFT + S)
 hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("hyprshot -m output"))
 
--- Finestra attiva (SUPER + Print)
+-- active window (SUPER + Print)
 hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("hyprshot -m window"))
 
--- Intero monitor (Print)
+-- screen (Print)
 hl.bind("Print", hl.dsp.exec_cmd("hyprshot -m region"))
 
 
 --------------------------
 -- FOCUS & MOVE WINDOWS
 --------------------------
--- Change Focus (SUPER + Freccia)
+-- Change Focus (SUPER + arrow)
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
 
--- Move Active Window (SUPER + SHIFT + Freccia)
+-- Move Active Window (SUPER + SHIFT + arrow)
 hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "l" }))
 hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "r" }))
 hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "u" }))

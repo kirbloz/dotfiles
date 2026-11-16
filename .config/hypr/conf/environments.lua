@@ -5,7 +5,7 @@
 
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
 
-hl.env("HYPRSHOT_DIR","/home/giovanni/Screenshots")
+hl.env("HYPRSHOT_DIR","/home/YOU/Screenshots")
 
 -- Cursors
 hl.env("XCURSOR_SIZE", "20")
@@ -25,6 +25,8 @@ hl.env("QT_AUTO_SCREEN_SCALE_FACTOR", "1")
 
 -- GTK Framework
 hl.env("GDK_SCALE", "1")
+
+
 
 -------------------------------
 ---- NVIDIA SPECIFIC VARS  ----

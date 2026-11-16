@@ -42,6 +42,12 @@ hl.window_rule({
     min_size = { 700, 700 }
 })
 
+hl.window_rule({ 
+    match = { title = ".*Settings.*"},
+    float = true,
+    min_size = { 700, 700 }
+})
+
 hl.window_rule({
   match = { title = ".*Friends List.*|.*Extension.*Bitwarden.*" },
   float = true,
