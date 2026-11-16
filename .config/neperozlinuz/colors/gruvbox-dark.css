@@ -115,16 +115,16 @@
 --fg: #ebdbb2;
 --fg-muted: #a89984;
 
- ---- ACCENTI ---- 
+ ---- ACCENTS ---- 
 --accent: #83a598;
 --accent-alt: #689d6a;
 
- ---- STATI ---- 
+ ---- STATUS ---- 
 --active: #b8bb26;
 --urgent: #fb4934;
 --warning: #fabd2f;
 
----- BORDI / SEPARATORI ---- 
+---- BORDERS ---- 
 --border: #3c3836;
 }
 
